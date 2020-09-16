@@ -1,30 +1,28 @@
+import "reflect-metadata";
 import express from "express";
-import { config } from "dotenv";
 import { createConnection } from "typeorm";
-import { Cat } from "./entities/Cat";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 
-import dbConfig from "./dbConfig";
-import TestResolver from "./resolvers/testResolver";
-config();
+import dbConfig from "./config/db";
+import PostResolver from "./resolvers/PostResolver";
 
 // Config
-const { PORT } = process.env;
+import { PORT } from "./config/main";
 
 (async () => {
   await createConnection(dbConfig);
   const app = express();
 
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({ resolvers: [TestResolver] }),
+    schema: await buildSchema({ resolvers: [PostResolver] }),
+    context: ({ req }) => ({ req }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
 
   // Test route
   app.get("/", async (_req, res) => {
-    await Cat.insert({ name: "Test cat" });
     res.send("OK 👌");
   });
 
