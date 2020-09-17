@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import express from "express";
 import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
@@ -9,13 +8,19 @@ import PostResolver from "./resolvers/PostResolver";
 
 // Config
 import { PORT } from "./config/main";
+import UserResolver from "./resolvers/UserResolver";
+
+import "reflect-metadata";
 
 (async () => {
   await createConnection(dbConfig);
   const app = express();
 
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({ resolvers: [PostResolver] }),
+    schema: await buildSchema({
+      resolvers: [PostResolver, UserResolver],
+      validate: false,
+    }),
     context: ({ req }) => ({ req }),
   });
 
