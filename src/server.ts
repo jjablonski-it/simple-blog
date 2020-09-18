@@ -2,7 +2,7 @@ import express from "express";
 import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-
+import session from "express-session";
 import dbConfig from "./config/db";
 import PostResolver from "./resolvers/PostResolver";
 
@@ -15,6 +15,20 @@ import "reflect-metadata";
 (async () => {
   await createConnection(dbConfig);
   const app = express();
+
+  // Express middleware
+  app.use(
+    session({
+      name: "qid",
+      secret: "secret",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        httpOnly: true,
+      },
+    })
+  );
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({

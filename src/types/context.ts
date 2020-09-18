@@ -1,5 +1,6 @@
-import { Request } from "apollo-server-express";
+import { Request, Response } from "express";
 
-export interface Context {
-  req: Request;
+export interface ContextType {
+  req: Request & { session: Express.Session };
+  res: Response;
 }
