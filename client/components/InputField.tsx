@@ -1,4 +1,4 @@
-import { FormControl, TextField, TextFieldProps } from "@material-ui/core";
+import { Box, FormControl, TextField, TextFieldProps } from "@material-ui/core";
 import { useField } from "formik";
 import React, { InputHTMLAttributes } from "react";
 
@@ -12,19 +12,22 @@ const InputField = (props: Props) => {
 
   const { name } = field;
   return (
-    <FormControl fullWidth>
-      {/* <FormLabel htmlFor={name}>{name}</FormLabel> */}
-      <TextField
-        {...field}
-        id={name}
-        placeholder={name}
-        fullWidth
-        {...props.inputProps}
-        error={!!error}
-        helperText={!!error && error}
-        type={name === "password" ? "password" : "text"}
-      />
-    </FormControl>
+    <Box my={2}>
+      <FormControl fullWidth>
+        {/* <FormLabel htmlFor={name}>{name}</FormLabel> */}
+        <TextField
+          {...field}
+          id={name}
+          placeholder={name}
+          fullWidth
+          {...props.inputProps}
+          error={!!error}
+          helperText={!!error && error}
+          type={name === "password" ? "password" : "text"}
+          autoComplete="off"
+        />
+      </FormControl>
+    </Box>
   );
 };
 

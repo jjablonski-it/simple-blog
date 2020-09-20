@@ -11,8 +11,8 @@ export default function Home() {
     }
   `);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {JSON.stringify(error)}:</p>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {JSON.stringify(error)}:</div>;
 
   return <div>{JSON.stringify(data)}</div>;
 }

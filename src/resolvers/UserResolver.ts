@@ -52,7 +52,7 @@ export default class UserResolver {
     return user;
   }
 
-  @Query(() => UserResponse, { nullable: true })
+  @Mutation(() => UserResponse, { nullable: true })
   async login(
     @Arg("input") { username, password }: UsernamePasswordInput,
     @Ctx() { req }: ContextType

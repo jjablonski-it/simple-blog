@@ -1,15 +1,26 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
 import "../styles/globals.css";
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   uri: "http://localhost:4000/graphql",
+  credentials: "include",
+});
+
+const theme = createMuiTheme({
+  palette: {
+    type: "dark",
+  },
 });
 
 function MyApp({ Component, pageProps }) {
   return (
     <ApolloProvider client={client}>
-      <Component {...pageProps} />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
     </ApolloProvider>
   );
 }
