@@ -5,6 +5,7 @@ import { buildSchema } from "type-graphql";
 import session from "express-session";
 import dbConfig from "./config/db";
 import PostResolver from "./resolvers/PostResolver";
+import cors from "cors";
 
 // Config
 import { PORT } from "./config/main";
@@ -17,6 +18,8 @@ import "reflect-metadata";
   const app = express();
 
   // Express middleware
+  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
   app.use(
     session({
       name: "qid",
