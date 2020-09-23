@@ -1,10 +1,17 @@
 import { Form, Formik } from "formik";
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import InputField from "../components/InputField";
-import { useLoginMutation } from "../generated/graphql";
+import {
+  MeDocument,
+  MeQuery,
+  useLoginMutation,
+  useMeQuery,
+} from "../generated/graphql";
+import { useRouter } from "next/router";
 
 const Login = () => {
   const [login, { error, data }] = useLoginMutation();
+  const router = useRouter();
 
   if (error) return <p>Error: {JSON.stringify(error)}:</p>;
 
@@ -14,11 +21,27 @@ const Login = () => {
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const { username, password } = values;
-          const res = await login({ variables: { username, password } });
+          const res = await login({
+            variables: { input: { username, password } },
+            update: (store) => {
+              const me: any = store.readQuery<MeQuery>({
+                query: MeDocument,
+              });
+
+              store.writeQuery<MeQuery>({
+                query: MeDocument,
+                data: {
+                  me,
+                },
+              });
+            },
+          });
 
           const error = res.data?.login?.error;
           if (error) {
             setErrors({ [error.field]: error.message });
+          } else {
+            router.push("/");
           }
         }}
       >

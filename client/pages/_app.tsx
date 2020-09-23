@@ -1,5 +1,6 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+import Navigation from "../components/Navigation";
 import "../styles/globals.css";
 
 const client = new ApolloClient({
@@ -19,6 +20,7 @@ function MyApp({ Component, pageProps }) {
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <Navigation />
         <Component {...pageProps} />
       </ThemeProvider>
     </ApolloProvider>

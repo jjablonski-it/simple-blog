@@ -1,12 +1,15 @@
 import { Form, Formik } from "formik";
 import { Button, Grid } from "@material-ui/core";
 import InputField from "../components/InputField";
-import { gql } from "@apollo/client";
+import { from, gql } from "@apollo/client";
 import { useRegisterMutation } from "../generated/graphql";
+import { useRouter } from "next/router";
+// import {EntityManager} from 'typeorm'
 
 const Register = () => {
   // const [register, { loading, error }] = useMutation(registerMutation);
   const [register, { loading, error, data }] = useRegisterMutation();
+  const router = useRouter();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {JSON.stringify(error)}:</p>;
@@ -17,11 +20,15 @@ const Register = () => {
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const { username, password } = values;
-          const res = await register({ variables: { username, password } });
+          const res = await register({
+            variables: { input: { username, password } },
+          });
 
           const error = res.data?.register.error;
           if (error) {
             setErrors({ [error.field]: error.message });
+          } else {
+            router.push("/login");
           }
         }}
       >
