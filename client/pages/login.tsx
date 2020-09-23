@@ -23,18 +23,19 @@ const Login = () => {
           const { username, password } = values;
           const res = await login({
             variables: { input: { username, password } },
-            update: (store) => {
-              const me: any = store.readQuery<MeQuery>({
-                query: MeDocument,
-              });
+            refetchQueries: [{ query: MeDocument }],
+            // update: (store) => {
+            //   const me: any = store.readQuery<MeQuery>({
+            //     query: MeDocument,
+            //   });
 
-              store.writeQuery<MeQuery>({
-                query: MeDocument,
-                data: {
-                  me,
-                },
-              });
-            },
+            //   store.writeQuery<MeQuery>({
+            //     query: MeDocument,
+            //     data: {
+            //       me,
+            //     },
+            //   });
+            // },
           });
 
           const error = res.data?.login?.error;
