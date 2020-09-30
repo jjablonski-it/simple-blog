@@ -85,4 +85,15 @@ export default class UserResolver {
     await user.save();
     return { user };
   }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { req, res }: ContextType) {
+    return new Promise((resolve) => {
+      req.session.destroy((err) => {
+        if (err) return resolve(false);
+        res.clearCookie("qid");
+        return resolve(true);
+      });
+    });
+  }
 }

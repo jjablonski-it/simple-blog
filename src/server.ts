@@ -38,7 +38,7 @@ import "reflect-metadata";
       resolvers: [PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req }) => ({ req }),
+    context: ({ req, res }) => ({ req, res }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
