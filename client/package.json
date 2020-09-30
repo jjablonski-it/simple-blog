@@ -14,15 +14,16 @@
     "formik": "^2.1.5",
     "graphql": "^15.3.0",
     "next": "9.5.3",
+    "next-with-apollo": "^5.1.0",
     "react": "16.13.1",
     "react-dom": "16.13.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.17.8",
-    "@types/graphql": "^14.5.0",
-    "@types/react": "^16.9.49",
     "@graphql-codegen/typescript-operations": "1.17.8",
-    "@graphql-codegen/typescript-react-apollo": "1.17.8"
+    "@graphql-codegen/typescript-react-apollo": "1.17.8",
+    "@types/graphql": "^14.5.0",
+    "@types/react": "^16.9.49"
   },
   "proxy": "http://localhost:4000"
 }

@@ -1,0 +1,5 @@
+fragment ReguralUser on User {
+  id
+  username
+  createdAt
+}

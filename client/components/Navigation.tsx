@@ -1,12 +1,18 @@
 import React from "react";
 import { Box, Button, Grid, Link } from "@material-ui/core";
 import NextLink from "next/link";
-import { useMeQuery } from "../generated/graphql";
+import {
+  MeDocument,
+  MeQuery,
+  useLogoutMutation,
+  useMeQuery,
+} from "../generated/graphql";
 
 interface Props {}
 
 const Navigation = (props: Props) => {
   const { data, loading } = useMeQuery();
+  const [logout] = useLogoutMutation();
 
   let body: any = null;
 
@@ -37,7 +43,23 @@ const Navigation = (props: Props) => {
       <>
         <Grid item>{data.me.username}</Grid>
         <Grid item>
-          <Button variant="text">Logout</Button>
+          <Button
+            variant="text"
+            onClick={() =>
+              logout({
+                update: (store) => {
+                  store.writeQuery<MeQuery>({
+                    query: MeDocument,
+                    data: {
+                      me: null,
+                    },
+                  });
+                },
+              })
+            }
+          >
+            Logout
+          </Button>
         </Grid>
       </>
     );

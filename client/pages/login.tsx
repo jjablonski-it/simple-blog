@@ -4,6 +4,8 @@ import InputField from "../components/InputField";
 import {
   MeDocument,
   MeQuery,
+  ReguralUserFragment,
+  ReguralUserFragmentDoc,
   useLoginMutation,
   useMeQuery,
 } from "../generated/graphql";
@@ -23,19 +25,30 @@ const Login = () => {
           const { username, password } = values;
           const res = await login({
             variables: { input: { username, password } },
-            refetchQueries: [{ query: MeDocument }],
-            // update: (store) => {
-            //   const me: any = store.readQuery<MeQuery>({
-            //     query: MeDocument,
-            //   });
+            // refetchQueries: [{ query: MeDocument }],
+            update: (store, { data }) => {
+              // const me: any = store.readQuery<MeQuery>({
+              //   query: MeDocument,
+              // });
+              if (!data?.login?.error) {
+                const me = data?.login?.user as ReguralUserFragment;
 
-            //   store.writeQuery<MeQuery>({
-            //     query: MeDocument,
-            //     data: {
-            //       me,
-            //     },
-            //   });
-            // },
+                store.writeQuery<MeQuery>({
+                  query: MeDocument,
+                  data: {
+                    me,
+                  },
+                });
+
+                // store.writeFragment<ReguralUserFragment>({
+                //   fragment: ReguralUserFragmentDoc,
+                //   id: me.id.toString(),
+                //   data: {
+                //     ...me,
+                //   },
+                // });
+              }
+            },
           });
 
           const error = res.data?.login?.error;
