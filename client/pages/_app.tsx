@@ -1,29 +1,28 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+import { ApolloCache, ApolloProvider } from "@apollo/client";
+import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import Navigation from "../components/Navigation";
+import { useApollo } from "../lib/apolloClient";
+import theme from "../src/theme";
 import "../styles/globals.css";
 
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  uri: "http://localhost:4000/graphql",
-  credentials: "include",
-});
-
-const theme = createMuiTheme({
-  palette: {
-    type: "dark",
-  },
-});
-
 function MyApp({ Component, pageProps }) {
+  const client = useApollo(pageProps.initialApolloProps);
+  // useEffect(() => {
+  //   // Remove the server-side injected CSS.
+  //   const jssStyles = document.querySelector("#jss-server-side");
+  //   if (jssStyles) {
+  //     jssStyles.parentElement?.removeChild(jssStyles);
+  //   }
+  // }, []);
+
   return (
-    <ApolloProvider client={client}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <ApolloProvider client={client}>
         <Navigation />
         <Component {...pageProps} />
-      </ThemeProvider>
-    </ApolloProvider>
+      </ApolloProvider>
+    </ThemeProvider>
   );
 }
 

@@ -5,13 +5,11 @@ import {
   MeDocument,
   MeQuery,
   ReguralUserFragment,
-  ReguralUserFragmentDoc,
   useLoginMutation,
-  useMeQuery,
 } from "../generated/graphql";
 import { useRouter } from "next/router";
 
-const Login = () => {
+const Login = ({ test }) => {
   const [login, { error, data }] = useLoginMutation();
   const router = useRouter();
 
@@ -19,6 +17,7 @@ const Login = () => {
 
   return (
     <Grid container justify="center">
+      {test}
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {

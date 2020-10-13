@@ -1,18 +1,29 @@
 import { gql, useQuery } from "@apollo/client";
-import Head from "next/head";
+import { MeDocument } from "../generated/graphql";
+import { initializeApollo } from "../lib/apolloClient";
 
-export default function Home() {
-  const { data, loading, error } = useQuery(gql`
-    {
-      me {
-        id
-        username
-      }
-    }
-  `);
+const Home = () => {
+  const { data, loading, error } = useQuery(MeDocument);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {JSON.stringify(error)}:</div>;
 
   return <div>{JSON.stringify(data)}</div>;
-}
+};
+
+Home.getInitialProps = async (ctx) => {
+  console.log(ctx);
+
+  if (ctx.req) return {};
+  const apolloClient = initializeApollo();
+
+  console.log("aaaaaa");
+
+  await apolloClient.query({ query: MeDocument });
+
+  return {
+    initialApolloProps: apolloClient.cache.extract(),
+  };
+};
+
+export default Home;

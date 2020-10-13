@@ -68,6 +68,23 @@ const Navigation = (props: Props) => {
   return (
     <Box p={3} bgcolor="#a1a1a1">
       <Grid container spacing={2} justify="flex-end" alignItems="center">
+        <>
+          <Grid item>
+            <NextLink href="/">
+              <Link variant="h5">Main</Link>
+            </NextLink>
+          </Grid>
+          <Grid item>
+            <NextLink href="/login">
+              <Link variant="h5">Login</Link>
+            </NextLink>
+          </Grid>
+          <Grid item>
+            <NextLink href="/register">
+              <Link variant="h5">Register</Link>
+            </NextLink>
+          </Grid>
+        </>
         {body}
       </Grid>
     </Box>

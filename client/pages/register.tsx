@@ -1,7 +1,6 @@
 import { Form, Formik } from "formik";
 import { Button, Grid } from "@material-ui/core";
 import InputField from "../components/InputField";
-import { from, gql } from "@apollo/client";
 import { useRegisterMutation } from "../generated/graphql";
 import { useRouter } from "next/router";
 // import {EntityManager} from 'typeorm'
