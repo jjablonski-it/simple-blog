@@ -1,19 +1,21 @@
+import "reflect-metadata";
 import express from "express";
 import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
+import connectMongo from "connect-mongo";
 import session from "express-session";
-import dbConfig from "./config/db";
-import PostResolver from "./resolvers/PostResolver";
 import cors from "cors";
 
 // Config
 import { PORT } from "./config/main";
+import dbConfig from "./config/db";
 import UserResolver from "./resolvers/UserResolver";
-
-import "reflect-metadata";
+import PostResolver from "./resolvers/PostResolver";
 
 (async () => {
+  const MongoStore = connectMongo(session);
+
   await createConnection(dbConfig);
   const app = express();
 
@@ -30,6 +32,7 @@ import "reflect-metadata";
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
       },
+      store: new MongoStore({ url: "mongodb://localhost/tut14_store" }),
     })
   );
 
