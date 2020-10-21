@@ -9,5 +9,5 @@ export default {
   password: "123",
   entities: [Post, User],
   synchronize: true,
-  logging: false,
+  logging: true,
 } as Parameters<typeof createConnection>[0];

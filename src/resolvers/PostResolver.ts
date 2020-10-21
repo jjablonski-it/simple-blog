@@ -1,5 +1,26 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { ContextType } from "src/types/context";
+import {
+  Arg,
+  Ctx,
+  Field,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
+import { LessThan } from "typeorm";
 import Post from "../entities/Post";
+import isAuth from "../middleware/isAuth";
+
+@InputType()
+class PostInput {
+  @Field()
+  title: string;
+
+  @Field()
+  text: string;
+}
 
 @Resolver()
 export default class PostResolver {
@@ -9,8 +30,17 @@ export default class PostResolver {
   }
 
   @Query(() => [Post])
-  async posts() {
-    return await Post.find();
+  async posts(
+    @Arg("limit") limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+  ) {
+    const realLimit = Math.min(50, limit);
+    const whereClause = cursor ? { where: { id: LessThan(cursor) } } : {};
+    return await Post.find({
+      order: { createdAt: "DESC" },
+      take: realLimit,
+      ...whereClause,
+    });
   }
 
   @Query(() => Post, { nullable: true })
@@ -19,11 +49,15 @@ export default class PostResolver {
   }
 
   @Mutation(() => Post)
-  async createPost(@Arg("title") title: string): Promise<Post> {
-    const post = new Post();
-    post.title = title;
-    await post.save();
-    return post;
+  @UseMiddleware(isAuth)
+  async createPost(
+    @Arg("input") input: PostInput,
+    @Ctx() { userId }: ContextType
+  ): Promise<Post> {
+    return await Post.create({
+      ...input,
+      creatorId: userId,
+    }).save();
   }
 
   @Mutation(() => Post)

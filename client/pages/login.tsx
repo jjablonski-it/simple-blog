@@ -12,6 +12,9 @@ import { useRouter } from "next/router";
 const Login = ({ test }) => {
   const [login, { error, data }] = useLoginMutation();
   const router = useRouter();
+  const { next } = router.query;
+
+  console.log(router);
 
   if (error) return <p>Error: {JSON.stringify(error)}:</p>;
 
@@ -54,7 +57,8 @@ const Login = ({ test }) => {
           if (error) {
             setErrors({ [error.field]: error.message });
           } else {
-            router.push("/");
+            if (typeof next === "string") router.push(next);
+            else router.push("/");
           }
         }}
       >

@@ -2,23 +2,45 @@ import { useMemo } from "react";
 import {
   ApolloCache,
   ApolloClient,
+  ApolloLink,
   HttpLink,
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
+import { useRouter } from "next/router";
 // import { concatPagination } from "@apollo/client/utilities";
 
 type AClient = ApolloClient<NormalizedCacheObject>;
 
 let apolloClient: AClient;
 
+const errorLink = onError(({ graphQLErrors, networkError, response }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
+          locations,
+          null,
+          4
+        )}, Path: ${path}`
+      )
+    );
+  }
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+  if (response) console.log("[response]", response);
+});
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: new HttpLink({
-      uri: "http://localhost:4000/graphql", // Server URL (must be absolute)
-      credentials: "include", // Additional fetch() options like `credentials` or `headers`
-    }),
+    link: ApolloLink.from([
+      errorLink,
+      new HttpLink({
+        uri: "http://localhost:4000/graphql", // Server URL (must be absolute)
+        credentials: "include", // Additional fetch() options like `credentials` or `headers`
+      }),
+    ]),
     cache: new InMemoryCache({
       // typePolicies: {
       //   Query: {

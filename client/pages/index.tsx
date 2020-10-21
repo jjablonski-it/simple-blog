@@ -1,29 +1,30 @@
-import { gql, useQuery } from "@apollo/client";
-import { MeDocument } from "../generated/graphql";
-import { initializeApollo } from "../lib/apolloClient";
+import useIsAuth from "../hooks/useIsAuth";
+import styles from "../styles/test.module.css";
 
 const Home = () => {
-  const { data, loading, error } = useQuery(MeDocument);
+  const { data, loading, error } = useIsAuth();
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {JSON.stringify(error)}:</div>;
 
-  return <div>{JSON.stringify(data)}</div>;
+  return (
+    <pre className={styles.testClass}>{JSON.stringify(data, null, 4)}</pre>
+  );
 };
 
-Home.getInitialProps = async (ctx) => {
-  console.log(ctx);
+// Home.getInitialProps = async (ctx) => {
+//   console.log(ctx);
 
-  if (ctx.req) return {};
-  const apolloClient = initializeApollo();
+//   if (ctx.req) return {};
+//   const apolloClient = initializeApollo();
 
-  console.log("aaaaaa");
+//   console.log("aaaaaa");
 
-  await apolloClient.query({ query: MeDocument });
+//   await apolloClient.query({ query: MeDocument });
 
-  return {
-    initialApolloProps: apolloClient.cache.extract(),
-  };
-};
+//   return {
+//     initialApolloProps: apolloClient.cache.extract(),
+//   };
+// };
 
 export default Home;
