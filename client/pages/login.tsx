@@ -9,18 +9,15 @@ import {
 } from "../generated/graphql";
 import { useRouter } from "next/router";
 
-const Login = ({ test }) => {
+const Login = () => {
   const [login, { error, data }] = useLoginMutation();
   const router = useRouter();
   const { next } = router.query;
-
-  console.log(router);
 
   if (error) return <p>Error: {JSON.stringify(error)}:</p>;
 
   return (
     <Grid container justify="center">
-      {test}
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
@@ -64,6 +61,8 @@ const Login = ({ test }) => {
       >
         {({ values }) => (
           <Form autoComplete="off" noValidate={true}>
+            <h1>Login</h1>
+
             <InputField name="username" />
             <InputField name="password" />
             <Button type="submit" variant="contained" color="primary" fullWidth>

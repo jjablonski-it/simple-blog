@@ -1,3 +1,17 @@
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@material-ui/core";
+import { motion } from "framer-motion";
+import Posts from "../components/Posts";
+import { usePostsQuery } from "../generated/graphql";
 import useIsAuth from "../hooks/useIsAuth";
 import styles from "../styles/test.module.css";
 
@@ -8,7 +22,18 @@ const Home = () => {
   if (error) return <div>Error: {JSON.stringify(error)}:</div>;
 
   return (
-    <pre className={styles.testClass}>{JSON.stringify(data, null, 4)}</pre>
+    <>
+      <motion.div
+        style={{ position: "fixed", x: "-100%" }}
+        animate={{
+          rotate: -15,
+          // transition: { duration: 1 },
+        }}
+      >
+        <pre className={styles.testClass}>{JSON.stringify(data, null, 4)}</pre>
+      </motion.div>
+      <Posts />
+    </>
   );
 };
 

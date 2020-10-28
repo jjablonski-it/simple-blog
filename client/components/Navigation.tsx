@@ -41,7 +41,11 @@ const Navigation = (props: Props) => {
   } else {
     body = (
       <>
-        <Grid item>{data.me.username}</Grid>
+        <Grid item>
+          <NextLink href="/">
+            <Link variant="h5">{data.me.username}</Link>
+          </NextLink>
+        </Grid>
         <Grid item>
           <NextLink href="/create-post">
             <Link variant="h5">Create post</Link>
@@ -70,7 +74,7 @@ const Navigation = (props: Props) => {
 
   return (
     <Box p={3} bgcolor="#a1a1a1">
-      <Grid container spacing={2} justify="flex-end" alignItems="center">
+      <Grid container spacing={1} justify="flex-end" alignItems="center">
         {body}
       </Grid>
     </Box>

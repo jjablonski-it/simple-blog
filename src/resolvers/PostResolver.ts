@@ -3,10 +3,13 @@ import {
   Arg,
   Ctx,
   Field,
+  FieldResolver,
   InputType,
+  Int,
   Mutation,
   Query,
   Resolver,
+  Root,
   UseMiddleware,
 } from "type-graphql";
 import { LessThan } from "typeorm";
@@ -22,8 +25,13 @@ class PostInput {
   text: string;
 }
 
-@Resolver()
+@Resolver(Post)
 export default class PostResolver {
+  @FieldResolver(() => String)
+  textSnippet(@Root() post: Post) {
+    return post.text.slice(0, 10);
+  }
+
   @Query(() => String!)
   test() {
     return "OK 👌";
@@ -31,8 +39,8 @@ export default class PostResolver {
 
   @Query(() => [Post])
   async posts(
-    @Arg("limit") limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => Int, { nullable: true }) cursor: number | null
   ) {
     const realLimit = Math.min(50, limit);
     const whereClause = cursor ? { where: { id: LessThan(cursor) } } : {};

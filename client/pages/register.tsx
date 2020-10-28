@@ -33,6 +33,7 @@ const Register = () => {
       >
         {({ values }) => (
           <Form>
+            <h1>Register</h1>
             <InputField name="username" />
             <InputField name="password" />
             <Button type="submit" variant="contained" color="primary" fullWidth>

@@ -9,6 +9,7 @@ import {
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { useRouter } from "next/router";
+import { concatPagination } from "@apollo/client/utilities";
 // import { concatPagination } from "@apollo/client/utilities";
 
 type AClient = ApolloClient<NormalizedCacheObject>;
@@ -42,13 +43,13 @@ function createApolloClient() {
       }),
     ]),
     cache: new InMemoryCache({
-      // typePolicies: {
-      //   Query: {
-      //     fields: {
-      //       allPosts: concatPagination(),
-      //     },
-      //   },
-      // },
+      typePolicies: {
+        Query: {
+          fields: {
+            posts: concatPagination(),
+          },
+        },
+      },
     }),
   });
 }
