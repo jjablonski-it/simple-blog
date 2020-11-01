@@ -43,13 +43,13 @@ function createApolloClient() {
       }),
     ]),
     cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            posts: concatPagination(),
-          },
-        },
-      },
+      // typePolicies: {
+      //   Query: {
+      //     fields: {
+      //       posts: concatPagination(),
+      //     },
+      //   },
+      // },
     }),
   });
 }

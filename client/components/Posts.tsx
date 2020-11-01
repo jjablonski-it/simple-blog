@@ -1,32 +1,49 @@
 import {
   Box,
   Grid,
-  CircularProgress,
   Card,
   CardContent,
   Typography,
   Button,
 } from "@material-ui/core";
 import React, { ReactElement } from "react";
-import { usePostsQuery } from "../generated/graphql";
+import { PostsQuery, usePostsQuery } from "../generated/graphql";
 
 const limit = 5;
 
 export default function Posts(): ReactElement {
-  const { data, loading, fetchMore } = usePostsQuery({
+  const { data, fetchMore } = usePostsQuery({
     variables: { limit },
-    notifyOnNetworkStatusChange: true,
-    nextFetchPolicy: "cache-first",
-    // pollInterval: 10,
   });
 
-  const posts = data?.posts;
+  const posts = data?.posts.posts;
+  const hasMore = data?.posts.hasMore;
 
   const loadMore = async () => {
     if (!posts) return;
-    const cursor = posts[posts?.length - 1].id;
-    const res = await fetchMore({ variables: { limit, cursor } });
-    console.log(res);
+
+    const cursor = posts[posts.length - 1].id;
+    console.log("length", posts.length);
+    console.log("cursor", cursor);
+    console.log("posts", posts);
+    await fetchMore({
+      variables: { limit, cursor },
+      updateQuery: (previousValue, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return previousValue;
+
+        return {
+          __typename: "Query",
+          posts: {
+            __typename: "PaginatedPosts",
+            posts: [
+              ...previousValue.posts.posts,
+              ...fetchMoreResult.posts.posts,
+            ],
+            hasMore: fetchMoreResult.posts.hasMore,
+          },
+        };
+      },
+    });
   };
 
   return (
@@ -45,7 +62,7 @@ export default function Posts(): ReactElement {
           </Grid>
         ))}
       </Grid>
-      {posts && (
+      {posts && hasMore && (
         <Box textAlign="center" mt={2}>
           <Button variant="outlined" onClick={loadMore}>
             {/* {loading && <CircularProgress />} */}

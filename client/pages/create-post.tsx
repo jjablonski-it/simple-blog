@@ -43,7 +43,9 @@ export default function CreatePost({}: Props) {
 
           cache.modify({
             fields: {
-              posts: (existingPosts = []) => {
+              posts: (existingPaginatedPosts: PaginatedPosts) => {
+                const existingPosts = existingPaginatedPosts.posts;
+
                 const newPostRef = cache.writeFragment<RegularPostFragment>({
                   data: data.createPost,
                   fragment: ReguralUserFragmentDoc,
@@ -52,7 +54,10 @@ export default function CreatePost({}: Props) {
                 console.log("ref", newPostRef);
                 console.log("existingPostsRefs", existingPosts);
 
-                return [newPostRef, ...existingPosts];
+                return {
+                  ...existingPaginatedPosts,
+                  posts: [newPostRef, ...existingPosts],
+                };
               },
             },
           });

@@ -1,5 +1,8 @@
 query Posts($limit: Int!, $cursor: Int) {
   posts(limit: $limit, cursor: $cursor) {
-    ...RegularPost
+    hasMore
+    posts {
+      ...RegularPost
+    }
   }
 }

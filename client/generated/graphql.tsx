@@ -17,7 +17,7 @@ export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
   test: Scalars['String'];
-  posts: Array<Post>;
+  posts: PaginatedPosts;
   post?: Maybe<Post>;
 };
 
@@ -53,6 +53,12 @@ export type Post = {
   textSnippet: Scalars['String'];
 };
 
+
+export type PaginatedPosts = {
+  __typename?: 'PaginatedPosts';
+  posts: Array<Post>;
+  hasMore: Scalars['Boolean'];
+};
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -200,10 +206,14 @@ export type PostsQueryVariables = Exact<{
 
 export type PostsQuery = (
   { __typename?: 'Query' }
-  & { posts: Array<(
-    { __typename?: 'Post' }
-    & RegularPostFragment
-  )> }
+  & { posts: (
+    { __typename?: 'PaginatedPosts' }
+    & Pick<PaginatedPosts, 'hasMore'>
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & RegularPostFragment
+    )> }
+  ) }
 );
 
 export const RegularPostFragmentDoc = gql`
@@ -392,7 +402,10 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const PostsDocument = gql`
     query Posts($limit: Int!, $cursor: Int) {
   posts(limit: $limit, cursor: $cursor) {
-    ...RegularPost
+    posts {
+      ...RegularPost
+    }
+    hasMore
   }
 }
     ${RegularPostFragmentDoc}`;
