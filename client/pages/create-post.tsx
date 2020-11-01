@@ -1,7 +1,15 @@
 import { Container } from "@material-ui/core";
 import { NextPage } from "next";
 import QuickForm from "../components/QuickForm";
-import { CreatePostDocument } from "../generated/graphql";
+import {
+  CreatePostDocument,
+  PostsDocument,
+  PostsQuery,
+  RegularPostFragment,
+  RegularPostFragmentDoc,
+  ReguralUserFragment,
+  ReguralUserFragmentDoc,
+} from "../generated/graphql";
 import useIsAuth from "../hooks/useIsAuth";
 
 interface Props {}
@@ -24,6 +32,30 @@ export default function CreatePost({}: Props) {
         mutation={CreatePostDocument}
         onError={(router) => {
           router.push("/login");
+        }}
+        // refetchQueries={[{ query: PostsDocument, variables: { limit: 10 } }]}
+        handleUpdate={(cache, { data, errors, context }, mutate) => {
+          console.log("errors", errors);
+          console.log("context", context);
+          console.log("data", data);
+
+          if (!data) return;
+
+          cache.modify({
+            fields: {
+              posts: (existingPosts = []) => {
+                const newPostRef = cache.writeFragment<RegularPostFragment>({
+                  data: data.createPost,
+                  fragment: ReguralUserFragmentDoc,
+                });
+
+                console.log("ref", newPostRef);
+                console.log("existingPostsRefs", existingPosts);
+
+                return [newPostRef, ...existingPosts];
+              },
+            },
+          });
         }}
       />
     </Container>

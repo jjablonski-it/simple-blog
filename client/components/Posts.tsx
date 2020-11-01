@@ -15,7 +15,9 @@ const limit = 5;
 export default function Posts(): ReactElement {
   const { data, loading, fetchMore } = usePostsQuery({
     variables: { limit },
-    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+    nextFetchPolicy: "cache-first",
+    // pollInterval: 10,
   });
 
   const posts = data?.posts;
@@ -30,30 +32,27 @@ export default function Posts(): ReactElement {
   return (
     <Box mt={3}>
       <Grid container spacing={1}>
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          posts?.map((post) => (
-            <Grid item key={post.id}>
-              <Card>
-                <CardContent>
-                  <Typography>{post.title}</Typography>
-                  <Typography color="textSecondary">
-                    {post.textSnippet}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))
-        )}
-        {posts && (
-          <Box textAlign="center" mt={2}>
-            <Button variant="outlined" onClick={loadMore}>
-              Load more
-            </Button>
-          </Box>
-        )}
+        {posts?.map((post) => (
+          <Grid item key={post.id}>
+            <Card>
+              <CardContent>
+                <Typography>{post.title}</Typography>
+                <Typography color="textSecondary">
+                  {post.textSnippet}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
+      {posts && (
+        <Box textAlign="center" mt={2}>
+          <Button variant="outlined" onClick={loadMore}>
+            {/* {loading && <CircularProgress />} */}
+            Load more
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

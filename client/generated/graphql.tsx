@@ -112,6 +112,11 @@ export type PostInput = {
   text: Scalars['String'];
 };
 
+export type RegularPostFragment = (
+  { __typename?: 'Post' }
+  & Pick<Post, 'id' | 'title' | 'textSnippet'>
+);
+
 export type ReguralUserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'username' | 'createdAt'>
@@ -126,7 +131,7 @@ export type CreatePostMutation = (
   { __typename?: 'Mutation' }
   & { createPost: (
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'text' | 'points' | 'creatorId' | 'createdAt' | 'updatedAt'>
+    & RegularPostFragment
   ) }
 );
 
@@ -197,10 +202,17 @@ export type PostsQuery = (
   { __typename?: 'Query' }
   & { posts: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'textSnippet'>
+    & RegularPostFragment
   )> }
 );
 
+export const RegularPostFragmentDoc = gql`
+    fragment RegularPost on Post {
+  id
+  title
+  textSnippet
+}
+    `;
 export const ReguralUserFragmentDoc = gql`
     fragment ReguralUser on User {
   id
@@ -211,16 +223,10 @@ export const ReguralUserFragmentDoc = gql`
 export const CreatePostDocument = gql`
     mutation CreatePost($input: PostInput!) {
   createPost(input: $input) {
-    id
-    title
-    text
-    points
-    creatorId
-    createdAt
-    updatedAt
+    ...RegularPost
   }
 }
-    `;
+    ${RegularPostFragmentDoc}`;
 export type CreatePostMutationFn = Apollo.MutationFunction<CreatePostMutation, CreatePostMutationVariables>;
 
 /**
@@ -386,12 +392,10 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const PostsDocument = gql`
     query Posts($limit: Int!, $cursor: Int) {
   posts(limit: $limit, cursor: $cursor) {
-    id
-    title
-    textSnippet
+    ...RegularPost
   }
 }
-    `;
+    ${RegularPostFragmentDoc}`;
 
 /**
  * __usePostsQuery__

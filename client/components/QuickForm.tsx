@@ -1,12 +1,20 @@
-import { DocumentNode, useMutation } from "@apollo/client";
+import { ApolloCache, DocumentNode, useMutation } from "@apollo/client";
 import { Button, CircularProgress } from "@material-ui/core";
 import { Formik, Form, FormikConfig, FormikValues } from "formik";
+import { GraphQLError } from "graphql";
 import { NextRouter, useRouter } from "next/dist/client/router";
 import InputField from "../components/InputField";
 
 interface Error {
   field: string;
   message: string;
+}
+
+interface updateData {
+  data?: any;
+  extensions?: Record<string, any> | undefined;
+  context?: Record<string, any> | undefined;
+  errors?: readonly GraphQLError[] | undefined;
 }
 
 type Props = {
@@ -16,6 +24,12 @@ type Props = {
   onSubmit: (data: any, router: NextRouter) => Error | void;
   onError?: (router: NextRouter) => void;
   formProps?: FormikConfig<FormikValues>;
+  handleUpdate?: (
+    store: ApolloCache<any>,
+    data: updateData,
+    mutate: any
+  ) => void;
+  refetchQueries?: any;
 };
 
 export default function QuickForm({
@@ -23,6 +37,7 @@ export default function QuickForm({
   fields,
   onSubmit,
   formProps,
+  handleUpdate,
   name,
   onError,
 }: Props) {
@@ -40,14 +55,22 @@ export default function QuickForm({
       onSubmit={async (values, { setSubmitting, setErrors, resetForm }) => {
         setSubmitting(true);
 
-        const { data } = await mutate({
+        console.log("input", values);
+
+        const response = await mutate({
           variables: { input: values },
-        }).catch((e) => {
-          onError && onError(router);
-          throw e;
+          update: (cache, data) =>
+            handleUpdate && handleUpdate(cache, data, mutate),
         });
+
         setSubmitting(false);
         resetForm();
+
+        console.log("response", response);
+        if (!response) return;
+
+        const { data } = response;
+        if (!data) return;
 
         console.log("data", data);
 
