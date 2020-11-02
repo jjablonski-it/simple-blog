@@ -1,4 +1,4 @@
-import { createConnection } from "typeorm";
+import { ConnectionOptions } from "typeorm";
 import Post from "../entities/Post";
 import User from "../entities/User";
 
@@ -9,5 +9,6 @@ export default {
   password: "123",
   entities: [Post, User],
   synchronize: true,
-  logging: false,
-} as Parameters<typeof createConnection>[0];
+  logging: true,
+} as ConnectionOptions;
+// Parameters<typeof createConnection>[0];

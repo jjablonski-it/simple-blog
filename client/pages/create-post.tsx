@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import QuickForm from "../components/QuickForm";
 import {
   CreatePostDocument,
+  PaginatedPosts,
   PostsDocument,
   PostsQuery,
   RegularPostFragment,

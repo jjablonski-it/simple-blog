@@ -1,5 +1,8 @@
 fragment RegularPost on Post {
   id
   title
-  textSnippet
+  textSnippet {
+    text
+    hasMore
+  }
 }

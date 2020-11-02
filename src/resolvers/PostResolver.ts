@@ -15,6 +15,7 @@ import {
 } from "type-graphql";
 import { LessThan } from "typeorm";
 import Post from "../entities/Post";
+import User from "../entities/User";
 import isAuth from "../middleware/isAuth";
 
 @InputType()
@@ -34,11 +35,23 @@ class PaginatedPosts {
   hasMore: boolean;
 }
 
+@ObjectType()
+class PostText {
+  @Field()
+  text: String;
+  @Field()
+  hasMore: boolean;
+}
+
 @Resolver(Post)
 export default class PostResolver {
-  @FieldResolver(() => String)
+  @FieldResolver(() => PostText)
   textSnippet(@Root() post: Post) {
-    return post.text.slice(0, 10);
+    const maxChars = 50;
+    return {
+      text: post.text.slice(0, maxChars),
+      hasMore: post.text.length > maxChars,
+    } as PostText;
   }
 
   @Query(() => String!)
@@ -55,13 +68,32 @@ export default class PostResolver {
     const whereClause = cursor ? { where: { id: LessThan(cursor) } } : {};
 
     const posts = await Post.find({
-      order: { createdAt: "DESC" },
+      // join: {
+      //   alias: "p",
+      //   innerJoin: { u: "p.creator" },
+      // },
+
       take: realLimit,
+      order: { createdAt: "DESC" },
       ...whereClause,
     });
 
+    const postsWithCreator = await Promise.all(
+      posts.map(
+        async (post): Promise<Post> => {
+          const user = await User.findOne({ id: post.creatorId });
+          if (!user) return post;
+
+          post.creator = user;
+          return post;
+        }
+      )
+    );
+
+    console.log("---------  POSTS  ----------\n", posts);
+
     return {
-      posts: posts.slice(0, realLimit - 1),
+      posts: postsWithCreator.slice(0, realLimit - 1),
       hasMore: posts.length === realLimit,
     };
   }

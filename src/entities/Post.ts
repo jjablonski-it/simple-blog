@@ -33,8 +33,9 @@ export default class Post extends BaseEntity {
   @Column()
   creatorId: number;
 
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user.posts)
-  originalPoster: User;
+  creator: User;
 
   @Field()
   @CreateDateColumn()

@@ -50,9 +50,15 @@ export type Post = {
   creatorId: Scalars['Float'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  textSnippet: Scalars['String'];
+  textSnippet: PostText;
 };
 
+
+export type PostText = {
+  __typename?: 'PostText';
+  text: Scalars['String'];
+  hasMore: Scalars['Boolean'];
+};
 
 export type PaginatedPosts = {
   __typename?: 'PaginatedPosts';
@@ -120,7 +126,11 @@ export type PostInput = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'textSnippet'>
+  & Pick<Post, 'id' | 'title'>
+  & { textSnippet: (
+    { __typename?: 'PostText' }
+    & Pick<PostText, 'text' | 'hasMore'>
+  ) }
 );
 
 export type ReguralUserFragment = (
@@ -220,7 +230,10 @@ export const RegularPostFragmentDoc = gql`
     fragment RegularPost on Post {
   id
   title
-  textSnippet
+  textSnippet {
+    text
+    hasMore
+  }
 }
     `;
 export const ReguralUserFragmentDoc = gql`
@@ -402,10 +415,10 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const PostsDocument = gql`
     query Posts($limit: Int!, $cursor: Int) {
   posts(limit: $limit, cursor: $cursor) {
+    hasMore
     posts {
       ...RegularPost
     }
-    hasMore
   }
 }
     ${RegularPostFragmentDoc}`;
