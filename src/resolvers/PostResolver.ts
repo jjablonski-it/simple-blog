@@ -14,6 +14,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { LessThan } from "typeorm";
+import Updoot from "../entities/Updoot";
 import Post from "../entities/Post";
 import User from "../entities/User";
 import isAuth from "../middleware/isAuth";
@@ -59,6 +60,28 @@ export default class PostResolver {
     return "OK 👌";
   }
 
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async upvote(
+    @Arg("postId") postId: number,
+    @Arg("value") value: number,
+    @Ctx() { userId }: ContextType
+  ) {
+    if (value === 0) throw Error("Value 0 provided");
+    const finalValue = value > 0 ? 1 : -1;
+
+    try {
+      const post = await Post.findOne(postId);
+      post!.points += finalValue;
+      await post!.save();
+
+      await Updoot.insert({ value: finalValue, postId, userId });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   @Query(() => PaginatedPosts!)
   async posts(
     @Arg("limit", () => Int) limit: number,
@@ -78,6 +101,8 @@ export default class PostResolver {
       ...whereClause,
     });
 
+    //TODO improve this shit
+
     const postsWithCreator = await Promise.all(
       posts.map(
         async (post): Promise<Post> => {
@@ -89,8 +114,6 @@ export default class PostResolver {
         }
       )
     );
-
-    console.log("---------  POSTS  ----------\n", posts);
 
     return {
       posts: postsWithCreator.slice(0, realLimit - 1),

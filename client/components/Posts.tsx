@@ -9,9 +9,9 @@ import {
 } from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { ReactElement } from "react";
-import { PostsQuery, usePostsQuery } from "../generated/graphql";
+import { usePostsQuery } from "../generated/graphql";
 
-const limit = 5;
+const limit = 20;
 let prevCount = 0;
 
 export default function Posts(): ReactElement {
