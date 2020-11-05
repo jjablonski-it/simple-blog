@@ -5,4 +5,5 @@ fragment RegularPost on Post {
     text
     hasMore
   }
+  points
 }

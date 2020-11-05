@@ -6,12 +6,15 @@ import {
   Typography,
   Button,
   CircularProgress,
+  IconButton,
 } from "@material-ui/core";
+import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
+import ArrowDropUp from "@material-ui/icons/ArrowDropUp";
 import { motion } from "framer-motion";
 import React, { ReactElement } from "react";
-import { usePostsQuery } from "../generated/graphql";
+import { usePostsQuery, useUpvoteMutation } from "../generated/graphql";
 
-const limit = 20;
+const limit = 3;
 let prevCount = 0;
 
 export default function Posts(): ReactElement {
@@ -19,6 +22,8 @@ export default function Posts(): ReactElement {
     variables: { limit },
     notifyOnNetworkStatusChange: true,
   });
+
+  const [upvotePost] = useUpvoteMutation();
 
   const posts = data?.posts.posts;
   const hasMore = data?.posts.hasMore;
@@ -30,9 +35,6 @@ export default function Posts(): ReactElement {
     if (!posts) return;
 
     const cursor = posts[posts.length - 1].id;
-    console.log("length", posts.length);
-    console.log("cursor", cursor);
-    console.log("posts", posts);
     await fetchMore({
       variables: { limit, cursor },
       updateQuery: (previousValue, { fetchMoreResult }) => {
@@ -59,33 +61,73 @@ export default function Posts(): ReactElement {
       opacity: 1,
       y: 0,
       transition: {
-        delay: custom * 0.05,
-        // staggerChildren: 0.5,
+        delay: 0.1 + custom * 0.05,
       },
     }),
   };
 
   return (
     <Box mt={3}>
-      <Grid container spacing={1}>
+      <Grid container spacing={1} justify="center">
         {posts?.map((post, i) => (
           <motion.div
-            key={post.id}
             drag
-            style={{ margin: "5px", cursor: "grab" }}
+            layout
+            onDrag={(e) => console.log(e.target)}
+            key={post.id}
+            style={{
+              margin: "5px",
+              cursor: "grab",
+              flexGrow: 1,
+              minWidth: "15%",
+            }}
             custom={i - prevCount}
             variants={variants}
             initial="init"
             animate="anim"
           >
-            <Grid item>
+            <Grid item xs>
               <Card>
                 <CardContent>
-                  <Typography>{post.title}</Typography>
-                  <Typography color="textSecondary">
-                    {post.textSnippet.text}
-                    {post.textSnippet.hasMore && "..."}
-                  </Typography>
+                  <Grid container wrap="nowrap" spacing={1}>
+                    <Grid
+                      item
+                      container
+                      direction="column"
+                      alignItems="center"
+                      xs
+                    >
+                      <IconButton
+                        size="small"
+                        onClick={() =>
+                          upvotePost({
+                            variables: { postId: post.id, value: 1 },
+                          })
+                        }
+                      >
+                        <ArrowDropUp />
+                      </IconButton>
+                      <Typography color="secondary">{post.points}</Typography>
+                      <IconButton
+                        size="small"
+                        onClick={() =>
+                          upvotePost({
+                            variables: { postId: post.id, value: -1 },
+                            // optimisticResponse: (cache, { postId }) => {},
+                          })
+                        }
+                      >
+                        <ArrowDropDown />
+                      </IconButton>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <Typography>{post.title}</Typography>
+                      <Typography color="textSecondary">
+                        {post.textSnippet.text}
+                        {post.textSnippet.hasMore && "..."}
+                      </Typography>
+                    </Grid>
+                  </Grid>
                 </CardContent>
               </Card>
             </Grid>

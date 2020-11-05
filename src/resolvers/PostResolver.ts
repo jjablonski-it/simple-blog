@@ -63,8 +63,8 @@ export default class PostResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async upvote(
-    @Arg("postId") postId: number,
-    @Arg("value") value: number,
+    @Arg("postId", () => Int) postId: number,
+    @Arg("value", () => Int) value: number,
     @Ctx() { userId }: ContextType
   ) {
     if (value === 0) throw Error("Value 0 provided");
@@ -73,9 +73,9 @@ export default class PostResolver {
     try {
       const post = await Post.findOne(postId);
       post!.points += finalValue;
-      await post!.save();
 
       await Updoot.insert({ value: finalValue, postId, userId });
+      await post!.save();
       return true;
     } catch (e) {
       return false;

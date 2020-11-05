@@ -37,6 +37,7 @@ export type User = {
   id: Scalars['Float'];
   username: Scalars['String'];
   posts: Array<Post>;
+  updoots: Array<Updoot>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
 };
@@ -48,9 +49,22 @@ export type Post = {
   text: Scalars['String'];
   points: Scalars['Float'];
   creatorId: Scalars['Float'];
+  creator: User;
+  updoots: Array<Updoot>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   textSnippet: PostText;
+};
+
+export type Updoot = {
+  __typename?: 'Updoot';
+  value: Scalars['Float'];
+  userId: Scalars['Float'];
+  user: User;
+  postId: Scalars['Float'];
+  post: Post;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 
@@ -71,6 +85,7 @@ export type Mutation = {
   login?: Maybe<UserResponse>;
   register: UserResponse;
   logout: Scalars['Boolean'];
+  upvote: Scalars['Boolean'];
   createPost: Post;
   updatePost: Post;
   deletePost: Scalars['Boolean'];
@@ -84,6 +99,12 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   input: UsernamePasswordInput;
+};
+
+
+export type MutationUpvoteArgs = {
+  value: Scalars['Int'];
+  postId: Scalars['Int'];
 };
 
 
@@ -126,7 +147,7 @@ export type PostInput = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title'>
+  & Pick<Post, 'id' | 'title' | 'points'>
   & { textSnippet: (
     { __typename?: 'PostText' }
     & Pick<PostText, 'text' | 'hasMore'>
@@ -197,6 +218,17 @@ export type RegisterMutation = (
   ) }
 );
 
+export type UpvoteMutationVariables = Exact<{
+  postId: Scalars['Int'];
+  value: Scalars['Int'];
+}>;
+
+
+export type UpvoteMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'upvote'>
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -234,6 +266,7 @@ export const RegularPostFragmentDoc = gql`
     text
     hasMore
   }
+  points
 }
     `;
 export const ReguralUserFragmentDoc = gql`
@@ -380,6 +413,37 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const UpvoteDocument = gql`
+    mutation Upvote($postId: Int!, $value: Int!) {
+  upvote(postId: $postId, value: $value)
+}
+    `;
+export type UpvoteMutationFn = Apollo.MutationFunction<UpvoteMutation, UpvoteMutationVariables>;
+
+/**
+ * __useUpvoteMutation__
+ *
+ * To run a mutation, you first call `useUpvoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpvoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [upvoteMutation, { data, loading, error }] = useUpvoteMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *      value: // value for 'value'
+ *   },
+ * });
+ */
+export function useUpvoteMutation(baseOptions?: Apollo.MutationHookOptions<UpvoteMutation, UpvoteMutationVariables>) {
+        return Apollo.useMutation<UpvoteMutation, UpvoteMutationVariables>(UpvoteDocument, baseOptions);
+      }
+export type UpvoteMutationHookResult = ReturnType<typeof useUpvoteMutation>;
+export type UpvoteMutationResult = Apollo.MutationResult<UpvoteMutation>;
+export type UpvoteMutationOptions = Apollo.BaseMutationOptions<UpvoteMutation, UpvoteMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -440,7 +504,7 @@ export const PostsDocument = gql`
  *   },
  * });
  */
-export function usePostsQuery(baseOptions?: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>) {
+export function usePostsQuery(baseOptions: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>) {
         return Apollo.useQuery<PostsQuery, PostsQueryVariables>(PostsDocument, baseOptions);
       }
 export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostsQuery, PostsQueryVariables>) {
