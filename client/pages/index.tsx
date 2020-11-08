@@ -38,7 +38,7 @@ const Home = () => {
   );
 };
 
-Home.getInitialProps = async (ctx) => {
+export const getStaticProps = async (ctx) => {
   // console.log(ctx);
 
   // if (ctx.req) return {};
@@ -53,7 +53,7 @@ Home.getInitialProps = async (ctx) => {
   // console.log((res.data as PostsQuery).posts);
 
   return {
-    initialApolloProps: apolloClient.cache.extract(),
+    props: { initialApolloProps: apolloClient.cache.extract() },
   };
 };
 

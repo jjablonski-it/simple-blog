@@ -12,7 +12,7 @@ import Post from "./Post";
 const limit = 10;
 let prevCount = 0;
 
-function Posts(): ReactElement {
+export default function Posts(): ReactElement {
   const { data, fetchMore, loading } = usePostsQuery({
     variables: { limit },
     notifyOnNetworkStatusChange: true,
@@ -68,5 +68,3 @@ function Posts(): ReactElement {
     </Box>
   );
 }
-
-export default Posts;
