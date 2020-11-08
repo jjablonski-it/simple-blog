@@ -71,15 +71,29 @@ export default class PostResolver {
     const finalValue = value > 0 ? 1 : -1;
 
     try {
+      const existingUpdoot = await Updoot.findOne({ postId, userId });
       const post = await Post.findOne(postId);
-      post!.points += finalValue;
+      if (!post) return;
 
-      await Updoot.insert({ value: finalValue, postId, userId });
-      await post!.save();
-      return true;
+      if (existingUpdoot) {
+        if (existingUpdoot?.value === finalValue) {
+          // Nothing changed, same vote
+        } else {
+          existingUpdoot.value = finalValue;
+          post.points += finalValue * 2;
+          await existingUpdoot.save();
+          await post.save();
+        }
+      } else {
+        post!.points += finalValue;
+
+        await Updoot.insert({ value: finalValue, postId, userId });
+        await post!.save();
+      }
     } catch (e) {
       return false;
     }
+    return true;
   }
 
   @Query(() => PaginatedPosts!)
