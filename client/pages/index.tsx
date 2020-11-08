@@ -11,14 +11,15 @@ import {
 } from "@material-ui/core";
 import { motion } from "framer-motion";
 import Posts from "../components/Posts";
-import { usePostsQuery } from "../generated/graphql";
+import { PostsDocument, PostsQuery, usePostsQuery } from "../generated/graphql";
 import useIsAuth from "../hooks/useIsAuth";
+import { initializeApollo } from "../lib/apolloClient";
 import styles from "../styles/test.module.css";
 
 const Home = () => {
-  const { data, loading, error } = useIsAuth();
+  const { data, error } = useIsAuth();
 
-  if (loading) return <div>Loading...</div>;
+  // if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {JSON.stringify(error)}:</div>;
 
   return (
@@ -37,19 +38,23 @@ const Home = () => {
   );
 };
 
-// Home.getInitialProps = async (ctx) => {
-//   console.log(ctx);
+Home.getInitialProps = async (ctx) => {
+  // console.log(ctx);
 
-//   if (ctx.req) return {};
-//   const apolloClient = initializeApollo();
+  // if (ctx.req) return {};
+  const apolloClient = initializeApollo();
 
-//   console.log("aaaaaa");
+  // console.log("aaaaaa");
 
-//   await apolloClient.query({ query: MeDocument });
+  const res = await apolloClient.query({
+    query: PostsDocument,
+    variables: { limit: 10 },
+  });
+  // console.log((res.data as PostsQuery).posts);
 
-//   return {
-//     initialApolloProps: apolloClient.cache.extract(),
-//   };
-// };
+  return {
+    initialApolloProps: apolloClient.cache.extract(),
+  };
+};
 
 export default Home;

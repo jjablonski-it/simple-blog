@@ -76,7 +76,7 @@ export default class PostResolver {
     const existingUpdoot = await Updoot.findOne({ postId, userId });
 
     if (existingUpdoot) {
-      if (existingUpdoot?.value === finalValue) {
+      if (existingUpdoot.value === finalValue) {
         // Nothing changed, same vote
       } else {
         existingUpdoot.value = finalValue;

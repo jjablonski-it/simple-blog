@@ -1,12 +1,18 @@
-import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@material-ui/core";
 import React, { ReactElement } from "react";
 import { usePostsQuery } from "../../generated/graphql";
 import Post from "./Post";
 
-const limit = 3;
+const limit = 10;
 let prevCount = 0;
 
-export default function Posts(): ReactElement {
+function Posts(): ReactElement {
   const { data, fetchMore, loading } = usePostsQuery({
     variables: { limit },
     notifyOnNetworkStatusChange: true,
@@ -42,6 +48,8 @@ export default function Posts(): ReactElement {
     });
   };
 
+  // if (loading) return <Typography variant="h1">LOADING</Typography>;
+
   return (
     <Box mt={3}>
       <Grid container spacing={1} justify="center">
@@ -60,3 +68,5 @@ export default function Posts(): ReactElement {
     </Box>
   );
 }
+
+export default Posts;

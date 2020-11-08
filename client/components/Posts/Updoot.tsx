@@ -14,33 +14,12 @@ interface Props {
 
 function Updoot({ post }: Props): ReactElement {
   const [upvotePost, tit] = useUpvoteMutation({
-    // update: (cache) => {
-    //   const upvotedPost = cache.readFragment<RegularPostFragment>({
+    // update: (cache, { data }) => {
+    //   const postFrag = cache.readFragment<RegularPostFragment>({
     //     fragment: RegularPostFragmentDoc,
-    //     id: `Post:${post.id}`,
+    //     id: "Post:" + post.id,
     //   });
-    //   cache.modify({
-    //     fields: {
-    //       posts: (existingPaginatedPosts: PaginatedPosts, ...test) => {
-    //         console.log("existingPaginatedPosts", existingPaginatedPosts);
-    //         console.log("test", test);
-    //         const exisitngPosts = existingPaginatedPosts.posts;
-    //         const upvotedPost = cache.readFragment<RegularPostFragment>({
-    //           fragment: RegularPostFragmentDoc,
-    //           id: `Post:${post.id}`,
-    //         });
-    //         if (!upvotedPost) return existingPaginatedPosts;
-    //         // return {
-    //         //   ...existingPaginatedPosts,
-    //         //   posts: {
-    //         //     ...exisitngPosts,
-    //         //     upvotedPost: { ...upvotePost, points: upvotedPost.points + 1 },
-    //         //   },
-    //         // };
-    //         return exisitngPosts;
-    //       },
-    //     },
-    //   });
+    //   if(!postFrag) return;
     // },
   });
 
