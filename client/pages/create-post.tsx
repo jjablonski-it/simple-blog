@@ -52,8 +52,8 @@ export default function CreatePost({}: Props) {
                   fragment: ReguralUserFragmentDoc,
                 });
 
-                console.log("ref", newPostRef);
-                console.log("existingPostsRefs", existingPosts);
+                // console.log("ref", newPostRef);
+                // console.log("existingPostsRefs", existingPosts);
 
                 return {
                   ...existingPaginatedPosts,

@@ -85,7 +85,7 @@ export type Mutation = {
   login?: Maybe<UserResponse>;
   register: UserResponse;
   logout: Scalars['Boolean'];
-  upvote: Scalars['Boolean'];
+  upvote: Post;
   createPost: Post;
   updatePost: Post;
   deletePost: Scalars['Boolean'];
@@ -226,7 +226,10 @@ export type UpvoteMutationVariables = Exact<{
 
 export type UpvoteMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'upvote'>
+  & { upvote: (
+    { __typename?: 'Post' }
+    & RegularPostFragment
+  ) }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -415,9 +418,11 @@ export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const UpvoteDocument = gql`
     mutation Upvote($postId: Int!, $value: Int!) {
-  upvote(postId: $postId, value: $value)
+  upvote(postId: $postId, value: $value) {
+    ...RegularPost
+  }
 }
-    `;
+    ${RegularPostFragmentDoc}`;
 export type UpvoteMutationFn = Apollo.MutationFunction<UpvoteMutation, UpvoteMutationVariables>;
 
 /**

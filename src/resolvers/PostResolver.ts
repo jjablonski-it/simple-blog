@@ -60,7 +60,7 @@ export default class PostResolver {
     return "OK 👌";
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async upvote(
     @Arg("postId", () => Int) postId: number,
@@ -70,30 +70,27 @@ export default class PostResolver {
     if (value === 0) throw Error("Value 0 provided");
     const finalValue = value > 0 ? 1 : -1;
 
-    try {
-      const existingUpdoot = await Updoot.findOne({ postId, userId });
-      const post = await Post.findOne(postId);
-      if (!post) return;
+    const post = await Post.findOne(postId);
+    if (!post) throw Error("Post does not exist");
 
-      if (existingUpdoot) {
-        if (existingUpdoot?.value === finalValue) {
-          // Nothing changed, same vote
-        } else {
-          existingUpdoot.value = finalValue;
-          post.points += finalValue * 2;
-          await existingUpdoot.save();
-          await post.save();
-        }
+    const existingUpdoot = await Updoot.findOne({ postId, userId });
+
+    if (existingUpdoot) {
+      if (existingUpdoot?.value === finalValue) {
+        // Nothing changed, same vote
       } else {
-        post!.points += finalValue;
-
-        await Updoot.insert({ value: finalValue, postId, userId });
-        await post!.save();
+        existingUpdoot.value = finalValue;
+        post.points += finalValue * 2;
+        await existingUpdoot.save();
+        await post.save();
       }
-    } catch (e) {
-      return false;
+    } else {
+      post!.points += finalValue;
+
+      await Updoot.insert({ value: finalValue, postId, userId });
+      await post!.save();
     }
-    return true;
+    return post;
   }
 
   @Query(() => PaginatedPosts!)

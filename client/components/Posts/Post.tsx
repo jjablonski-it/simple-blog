@@ -1,7 +1,7 @@
 import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
 import React from "react";
-import { Post, RegularPostFragment } from "../../generated/graphql";
+import { RegularPostFragment } from "../../generated/graphql";
 import Updoot from "./Updoot";
 
 interface Props {
