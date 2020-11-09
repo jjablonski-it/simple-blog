@@ -10,6 +10,7 @@ import {
 import { onError } from "@apollo/client/link/error";
 import { useRouter } from "next/router";
 import { concatPagination } from "@apollo/client/utilities";
+import { PaginatedPosts, PostsQueryResult } from "../generated/graphql";
 // import { concatPagination } from "@apollo/client/utilities";
 
 type AClient = ApolloClient<NormalizedCacheObject>;
@@ -43,13 +44,26 @@ function createApolloClient() {
       }),
     ]),
     cache: new InMemoryCache({
-      // typePolicies: {
-      //   Query: {
-      //     fields: {
-      //       posts: concatPagination(),
-      //     },
-      //   },
-      // },
+      typePolicies: {
+        Query: {
+          fields: {
+            posts: {
+              merge: (
+                existing: PaginatedPosts,
+                incoming: PaginatedPosts
+              ): PaginatedPosts | {} => {
+                const existingPosts = existing?.posts || [];
+                const combinedPosts = [...existingPosts, ...incoming.posts];
+
+                if (!existing) return incoming;
+
+                return { ...incoming, posts: combinedPosts };
+              },
+              read: (e) => e,
+            },
+          },
+        },
+      },
     }),
   });
 }

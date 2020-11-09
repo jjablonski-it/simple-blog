@@ -30,21 +30,21 @@ export default function Posts(): ReactElement {
     const cursor = posts[posts.length - 1].id;
     await fetchMore({
       variables: { limit, cursor },
-      updateQuery: (previousValue, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return previousValue;
+      // updateQuery: (previousValue, { fetchMoreResult }) => {
+      //   if (!fetchMoreResult) return previousValue;
 
-        return {
-          __typename: "Query",
-          posts: {
-            __typename: "PaginatedPosts",
-            posts: [
-              ...previousValue.posts.posts,
-              ...fetchMoreResult.posts.posts,
-            ],
-            hasMore: fetchMoreResult.posts.hasMore,
-          },
-        };
-      },
+      //   return {
+      //     __typename: "Query",
+      //     posts: {
+      //       __typename: "PaginatedPosts",
+      //       posts: [
+      //         ...previousValue.posts.posts,
+      //         ...fetchMoreResult.posts.posts,
+      //       ],
+      //       hasMore: fetchMoreResult.posts.hasMore,
+      //     },
+      //   };
+      // },
     });
   };
 
