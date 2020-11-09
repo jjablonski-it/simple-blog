@@ -66,7 +66,7 @@ export default class PostResolver {
     @Arg("postId", () => Int) postId: number,
     @Arg("value", () => Int) value: number,
     @Ctx() { userId }: ContextType
-  ) {
+  ): Promise<any> {
     if (value === 0) throw Error("Value 0 provided");
     const finalValue = value > 0 ? 1 : -1;
 
@@ -77,7 +77,12 @@ export default class PostResolver {
 
     if (existingUpdoot) {
       if (existingUpdoot.value === finalValue) {
-        // Nothing changed, same vote
+        // Same vote
+        await existingUpdoot.remove();
+        return {
+          ...post,
+          valueStatus: null,
+        };
       } else {
         existingUpdoot.value = finalValue;
         post.points += finalValue * 2;
