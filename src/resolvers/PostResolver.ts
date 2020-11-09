@@ -90,16 +90,22 @@ export default class PostResolver {
       await Updoot.insert({ value: finalValue, postId, userId });
       await post!.save();
     }
-    return post;
+    return {
+      ...post,
+      voteStatus: finalValue,
+    };
   }
 
   @Query(() => PaginatedPosts!)
   async posts(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => Int, { nullable: true }) cursor: number | null
+    @Arg("cursor", () => Int, { nullable: true }) cursor: number | null,
+    @Ctx() { req }: ContextType
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit) + 1;
     const whereClause = cursor ? { where: { id: LessThan(cursor) } } : {};
+
+    const { userId } = req.session;
 
     const posts = await Post.find({
       // join: {
@@ -116,12 +122,21 @@ export default class PostResolver {
 
     const postsWithCreator = await Promise.all(
       posts.map(
-        async (post): Promise<Post> => {
+        async (post): Promise<any> => {
           const user = await User.findOne({ id: post.creatorId });
           if (!user) return post;
 
+          let updootValue = null;
+          if (userId) {
+            const updoot = await Updoot.findOne({ userId, postId: post.id });
+            updootValue = updoot ? updoot.value : null;
+          }
+
           post.creator = user;
-          return post;
+          return {
+            ...post,
+            voteStatus: updootValue,
+          };
         }
       )
     );

@@ -13,7 +13,7 @@ interface Props {
 }
 
 function Updoot({ post }: Props): ReactElement {
-  const [upvotePost, tit] = useUpvoteMutation({
+  const [upvotePost] = useUpvoteMutation({
     // update: (cache, { data }) => {
     //   const postFrag = cache.readFragment<RegularPostFragment>({
     //     fragment: RegularPostFragmentDoc,
@@ -32,6 +32,7 @@ function Updoot({ post }: Props): ReactElement {
             variables: { postId: post.id, value: 1 },
           })
         }
+        color={post.voteStatus && post.voteStatus > 0 ? "secondary" : "default"}
       >
         <ArrowDropUp />
       </IconButton>
@@ -43,6 +44,7 @@ function Updoot({ post }: Props): ReactElement {
             variables: { postId: post.id, value: -1 },
           })
         }
+        color={post.voteStatus && post.voteStatus < 0 ? "secondary" : "default"}
       >
         <ArrowDropDown />
       </IconButton>

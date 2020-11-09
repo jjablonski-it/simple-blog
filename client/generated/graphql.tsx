@@ -51,6 +51,7 @@ export type Post = {
   creatorId: Scalars['Float'];
   creator: User;
   updoots: Array<Updoot>;
+  voteStatus?: Maybe<Scalars['Float']>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   textSnippet: PostText;
@@ -147,7 +148,7 @@ export type PostInput = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'points'>
+  & Pick<Post, 'id' | 'title' | 'points' | 'voteStatus'>
   & { textSnippet: (
     { __typename?: 'PostText' }
     & Pick<PostText, 'text' | 'hasMore'>
@@ -270,6 +271,7 @@ export const RegularPostFragmentDoc = gql`
     hasMore
   }
   points
+  voteStatus
 }
     `;
 export const ReguralUserFragmentDoc = gql`
