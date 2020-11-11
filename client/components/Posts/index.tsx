@@ -48,7 +48,7 @@ export default function Posts(): ReactElement {
     });
   };
 
-  // if (loading) return <Typography variant="h1">LOADING</Typography>;
+  if (!data && loading) return <Typography variant="h1">LOADING</Typography>;
 
   return (
     <Box mt={3}>

@@ -11,6 +11,7 @@ import { onError } from "@apollo/client/link/error";
 import { useRouter } from "next/router";
 import { concatPagination } from "@apollo/client/utilities";
 import { PaginatedPosts, PostsQueryResult } from "../generated/graphql";
+import { Request } from "express";
 // import { concatPagination } from "@apollo/client/utilities";
 
 type AClient = ApolloClient<NormalizedCacheObject>;
@@ -33,7 +34,11 @@ const errorLink = onError(({ graphQLErrors, networkError, response }) => {
   if (response) console.log("[response]", response);
 });
 
-function createApolloClient() {
+function createApolloClient(req: Request | null = null) {
+  let cookie: String | undefined = "";
+  if (req) cookie = req.headers.cookie;
+  console.log(cookie);
+
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: ApolloLink.from([
@@ -41,6 +46,7 @@ function createApolloClient() {
       new HttpLink({
         uri: "http://localhost:4000/graphql", // Server URL (must be absolute)
         credentials: "include", // Additional fetch() options like `credentials` or `headers`
+        headers: req ? { cookie } : undefined,
       }),
     ]),
     cache: new InMemoryCache({
@@ -69,9 +75,10 @@ function createApolloClient() {
 }
 
 export function initializeApollo(
-  initialState: ApolloCache<InMemoryCache> | null = null
+  initialState: ApolloCache<InMemoryCache> | null = null,
+  request: Request | null = null
 ): AClient {
-  const _apolloClient = apolloClient ?? createApolloClient();
+  const _apolloClient = apolloClient ?? createApolloClient(request);
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // gets hydrated here

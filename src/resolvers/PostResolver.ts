@@ -55,6 +55,20 @@ export default class PostResolver {
     } as PostText;
   }
 
+  @FieldResolver(() => Int, { nullable: true })
+  async voteStatus(@Root() post: Post, @Ctx() { req }: ContextType) {
+    const { userId } = req.session;
+    console.log("vote status, userId: ", userId);
+
+    if (userId) {
+      const updoot = await Updoot.findOne({ userId, postId: post.id });
+      if (updoot) {
+        return updoot.value;
+      }
+    }
+    return null;
+  }
+
   @Query(() => String!)
   test() {
     return "OK 👌";
@@ -66,7 +80,7 @@ export default class PostResolver {
     @Arg("postId", () => Int) postId: number,
     @Arg("value", () => Int) value: number,
     @Ctx() { userId }: ContextType
-  ): Promise<any> {
+  ): Promise<Post> {
     if (value === 0) throw Error("Value 0 provided");
     const finalValue = value > 0 ? 1 : -1;
 
@@ -79,10 +93,6 @@ export default class PostResolver {
       if (existingUpdoot.value === finalValue) {
         // Same vote
         await existingUpdoot.remove();
-        return {
-          ...post,
-          valueStatus: null,
-        };
       } else {
         existingUpdoot.value = finalValue;
         post.points += finalValue * 2;
@@ -95,23 +105,16 @@ export default class PostResolver {
       await Updoot.insert({ value: finalValue, postId, userId });
       await post!.save();
     }
-    return {
-      ...post,
-      voteStatus: finalValue,
-    };
+    return post;
   }
 
   @Query(() => PaginatedPosts!)
   async posts(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => Int, { nullable: true }) cursor: number | null,
-    @Ctx() { req }: ContextType
+    @Arg("cursor", () => Int, { nullable: true }) cursor: number | null
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit) + 1;
     const whereClause = cursor ? { where: { id: LessThan(cursor) } } : {};
-
-    const { userId } = req.session;
-
     const posts = await Post.find({
       // join: {
       //   alias: "p",
@@ -131,17 +134,8 @@ export default class PostResolver {
           const user = await User.findOne({ id: post.creatorId });
           if (!user) return post;
 
-          let updootValue = null;
-          if (userId) {
-            const updoot = await Updoot.findOne({ userId, postId: post.id });
-            updootValue = updoot ? updoot.value : null;
-          }
-
           post.creator = user;
-          return {
-            ...post,
-            voteStatus: updootValue,
-          };
+          return post;
         }
       )
     );

@@ -51,10 +51,10 @@ export type Post = {
   creatorId: Scalars['Float'];
   creator: User;
   updoots: Array<Updoot>;
-  voteStatus?: Maybe<Scalars['Float']>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   textSnippet: PostText;
+  voteStatus?: Maybe<Scalars['Int']>;
 };
 
 export type Updoot = {
