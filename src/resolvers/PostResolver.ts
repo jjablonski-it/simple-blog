@@ -93,18 +93,18 @@ export default class PostResolver {
       if (existingUpdoot.value === finalValue) {
         // Same vote
         await existingUpdoot.remove();
+        post.points -= finalValue;
       } else {
         existingUpdoot.value = finalValue;
         post.points += finalValue * 2;
         await existingUpdoot.save();
-        await post.save();
       }
     } else {
-      post!.points += finalValue;
+      post.points += finalValue;
 
       await Updoot.insert({ value: finalValue, postId, userId });
-      await post!.save();
     }
+    await post.save();
     return post;
   }
 
