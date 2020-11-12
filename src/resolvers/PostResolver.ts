@@ -84,7 +84,7 @@ export default class PostResolver {
     if (value === 0) throw Error("Value 0 provided");
     const finalValue = value > 0 ? 1 : -1;
 
-    const post = await Post.findOne(postId);
+    const post = await Post.findOne(postId, { relations: ["creator"] });
     if (!post) throw Error("Post does not exist");
 
     const existingUpdoot = await Updoot.findOne({ postId, userId });
@@ -116,11 +116,7 @@ export default class PostResolver {
     const realLimit = Math.min(50, limit) + 1;
     const whereClause = cursor ? { where: { id: LessThan(cursor) } } : {};
     const posts = await Post.find({
-      // join: {
-      //   alias: "p",
-      //   innerJoin: { u: "p.creator" },
-      // },
-
+      relations: ["creator"],
       take: realLimit,
       order: { createdAt: "DESC" },
       ...whereClause,
@@ -147,8 +143,8 @@ export default class PostResolver {
   }
 
   @Query(() => Post, { nullable: true })
-  async post(@Arg("id") id: number) {
-    return await Post.findOne(id);
+  async post(@Arg("id", () => Int) id: number) {
+    return await Post.findOne(id, { relations: ["creator"] });
   }
 
   @Mutation(() => Post)

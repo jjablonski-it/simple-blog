@@ -1,6 +1,7 @@
-import { Card, CardContent, Grid, Typography } from "@material-ui/core";
+import { Card, CardContent, Grid, Link, Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
-import React from "react";
+import React, { useState } from "react";
+import NextLink from "next/link";
 import { RegularPostFragment } from "../../generated/graphql";
 import Updoot from "./Updoot";
 
@@ -22,17 +23,20 @@ const variants = {
 };
 
 function Post({ post, index, prevCount }: Props) {
+  // const [blured, setBlured] = useState(false);
+
   return (
     <motion.div
       drag
       layout
-      onDrag={(e) => console.log(e.target)}
+      // onAnimationStart={() => setBlured(true)}
+      // onLayoutAnimationComplete={() => setBlured(false)}
       key={post.id}
       style={{
         margin: "5px",
         cursor: "grab",
         flexGrow: 1,
-        minWidth: "15%",
+        minWidth: "20%",
       }}
       custom={index - prevCount}
       variants={variants}
@@ -47,7 +51,14 @@ function Post({ post, index, prevCount }: Props) {
                 <Updoot post={post} />
               </Grid>
               <Grid item xs={10}>
-                <Typography>{post.title}</Typography>
+                <NextLink href="/post/[id]" as={`/post/${post.id}`}>
+                  <Link>
+                    <Typography>
+                      {post.title} <b>- {post.creator.username}</b>
+                    </Typography>
+                  </Link>
+                </NextLink>
+
                 <Typography color="textSecondary">
                   {post.textSnippet.text}
                   {post.textSnippet.hasMore && "..."}

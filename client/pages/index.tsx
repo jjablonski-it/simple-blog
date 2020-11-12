@@ -46,6 +46,7 @@ const Home = () => {
 // };
 
 Home.getInitialProps = async (ctx) => {
+  if (!ctx.req) return {};
   const apolloClient = initializeApollo(undefined, ctx.req);
 
   await apolloClient.query({
