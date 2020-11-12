@@ -42,6 +42,7 @@ function Post({ post, index, prevCount }: Props) {
       variants={variants}
       initial="init"
       animate="anim"
+      layoutId={`${post.id}`}
     >
       <Grid item xs>
         <Card>

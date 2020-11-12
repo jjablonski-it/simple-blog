@@ -1,7 +1,16 @@
-import { CircularProgress, Typography } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@material-ui/core";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { ReactElement } from "react";
+import Updoot from "../../components/Posts/Updoot";
 import { usePostQuery } from "../../generated/graphql";
+import NextLink from "next/link";
 
 export default function Post(): ReactElement {
   const router = useRouter();
@@ -11,11 +20,34 @@ export default function Post(): ReactElement {
     variables: { id: postId },
     skip: postId < 0,
   });
+  const post = data?.post;
+
+  if (!post)
+    return (
+      <motion.div layoutId={`${postId}`}>
+        <CircularProgress />
+      </motion.div>
+    );
+
   return (
-    <div>
-      {loading && <CircularProgress />}
-      <Typography variant="h1">{data?.post?.title}</Typography>
-      <Typography variant="body1">{data?.post?.text}</Typography>
-    </div>
+    <motion.div layoutId={`${postId}`}>
+      <NextLink href="/">
+        <Card>
+          <CardContent>
+            <Grid container wrap="nowrap" spacing={1}>
+              <Grid item container direction="column" alignItems="center" xs>
+                <Updoot post={post} />
+              </Grid>
+              <Grid item xs={10}>
+                <Typography>
+                  {post.title} <b>- {post.creator.username}</b>
+                </Typography>
+              </Grid>
+              <Typography color="textSecondary">{post.text}</Typography>
+            </Grid>
+          </CardContent>
+        </Card>
+      </NextLink>
+    </motion.div>
   );
 }

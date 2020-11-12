@@ -2,14 +2,13 @@ import { IconButton, Typography } from "@material-ui/core";
 import { ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
 import React, { ReactElement } from "react";
 import {
-  PaginatedPosts,
+  Post,
   RegularPostFragment,
-  RegularPostFragmentDoc,
   useUpvoteMutation,
 } from "../../generated/graphql";
 
 interface Props {
-  post: RegularPostFragment;
+  post: RegularPostFragment | any;
 }
 
 function Updoot({ post }: Props): ReactElement {

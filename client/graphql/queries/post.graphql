@@ -2,5 +2,9 @@ query Post($id: Int!) {
   post(id: $id) {
     title
     text
+    creator {
+      username
+    }
+    points
   }
 }
