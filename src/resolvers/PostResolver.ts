@@ -153,10 +153,14 @@ export default class PostResolver {
     @Arg("input") input: PostInput,
     @Ctx() { userId }: ContextType
   ): Promise<Post> {
-    return await Post.create({
+    const post = await Post.create({
       ...input,
       creatorId: userId,
     }).save();
+
+    console.log("post", post.id);
+
+    return (await Post.findOne(post.id, { relations: ["creator"] })) as Post;
   }
 
   @Mutation(() => Post)
@@ -171,9 +175,13 @@ export default class PostResolver {
     return post;
   }
 
+  @UseMiddleware(isAuth)
   @Mutation(() => Boolean)
-  async deletePost(@Arg("id") id: number) {
-    const result = await Post.delete(id);
+  async deletePost(
+    @Arg("id", () => Int) id: number,
+    @Ctx() { userId }: ContextType
+  ) {
+    const result = await Post.delete({ id, creatorId: userId });
     if (!result) return false;
     return true;
   }

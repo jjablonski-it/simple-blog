@@ -1,9 +1,22 @@
-import { Card, CardContent, Grid, Link, Typography } from "@material-ui/core";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Grid,
+  IconButton,
+  Link,
+  Typography,
+} from "@material-ui/core";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React from "react";
 import NextLink from "next/link";
-import { RegularPostFragment } from "../../generated/graphql";
+import {
+  RegularPostFragment,
+  useDeleteMutation,
+} from "../../generated/graphql";
 import Updoot from "./Updoot";
+import { Remove } from "@material-ui/icons";
+import Posts from ".";
 
 interface Props {
   post: RegularPostFragment;
@@ -24,6 +37,7 @@ const variants = {
 
 function Post({ post, index, prevCount }: Props) {
   // const [blured, setBlured] = useState(false);
+  const [deletePost] = useDeleteMutation();
 
   return (
     <motion.div
@@ -47,17 +61,46 @@ function Post({ post, index, prevCount }: Props) {
       <Grid item xs>
         <Card>
           <CardContent>
-            <Grid container wrap="nowrap" spacing={1}>
+            <Grid
+              container
+              wrap="nowrap"
+              spacing={1}
+              style={{ position: "relative" }}
+            >
+              <IconButton
+                style={{ position: "absolute", right: 0 }}
+                onClick={() =>
+                  deletePost({
+                    variables: { id: post.id },
+                    update: (cache) => {
+                      cache.modify({
+                        fields: {
+                          posts: (existing = {}, { readField }) => {
+                            const posts = existing.posts.filter(
+                              (p) => readField("id", p) !== post.id
+                            );
+
+                            const res = { ...existing, posts };
+                            console.log(res);
+
+                            return res;
+                          },
+                        },
+                      });
+                    },
+                  })
+                }
+              >
+                <Remove color="secondary" fontSize="small" />
+              </IconButton>
               <Grid item container direction="column" alignItems="center" xs>
                 <Updoot post={post} />
               </Grid>
               <Grid item xs={10}>
                 <NextLink href="/post/[id]" as={`/post/${post.id}`}>
-                  <Link>
-                    <Typography>
-                      {post.title} <b>- {post.creator.username}</b>
-                    </Typography>
-                  </Link>
+                  <Typography style={{ cursor: "pointer" }}>
+                    {post.title} <b>- {post.creator.username}</b>
+                  </Typography>
                 </NextLink>
 
                 <Typography color="textSecondary">
