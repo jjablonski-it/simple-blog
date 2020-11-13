@@ -88,7 +88,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   upvote: Post;
   createPost: Post;
-  updatePost: Post;
+  updatePost?: Maybe<Post>;
   deletePost: Scalars['Boolean'];
 };
 
@@ -242,10 +242,14 @@ export type UpdatePostMutationVariables = Exact<{
 
 export type UpdatePostMutation = (
   { __typename?: 'Mutation' }
-  & { updatePost: (
+  & { updatePost?: Maybe<(
     { __typename?: 'Post' }
-    & RegularPostFragment
-  ) }
+    & Pick<Post, 'id' | 'title' | 'text'>
+    & { textSnippet: (
+      { __typename?: 'PostText' }
+      & Pick<PostText, 'text' | 'hasMore'>
+    ) }
+  )> }
 );
 
 export type UpvoteMutationVariables = Exact<{
@@ -500,10 +504,16 @@ export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutatio
 export const UpdatePostDocument = gql`
     mutation UpdatePost($id: Int!, $title: String, $text: String) {
   updatePost(id: $id, title: $title, text: $text) {
-    ...RegularPost
+    id
+    title
+    text
+    textSnippet {
+      text
+      hasMore
+    }
   }
 }
-    ${RegularPostFragmentDoc}`;
+    `;
 export type UpdatePostMutationFn = Apollo.MutationFunction<UpdatePostMutation, UpdatePostMutationVariables>;
 
 /**

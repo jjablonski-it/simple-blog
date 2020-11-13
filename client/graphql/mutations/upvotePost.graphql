@@ -1,7 +1,5 @@
 mutation Upvote($postId: Int!, $value: Int!) {
   upvote(postId: $postId, value: $value) {
-    id
-    title
-    text
+    ...RegularPost
   }
 }

@@ -41,6 +41,8 @@ export default function Post(): ReactElement {
           <Formik
             initialValues={{ title: post.title, text: post.text }}
             onSubmit={(values) => {
+              console.log("values", values);
+
               updatePost({ variables: { id: post.id, ...values } });
               router.push("/");
             }}
@@ -48,7 +50,7 @@ export default function Post(): ReactElement {
             {({ handleSubmit, values }) => (
               <form onSubmit={handleSubmit}>
                 {Object.keys(values).map((value) => (
-                  <InputField name={value} value={values[value]} />
+                  <InputField name={value} value={values[value]} key={value} />
                 ))}
                 {/* <InputField name="title" value={values.title} />
                 <InputField name="text" value={values.text} /> */}

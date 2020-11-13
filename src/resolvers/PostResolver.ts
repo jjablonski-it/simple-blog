@@ -163,7 +163,7 @@ export default class PostResolver {
     return (await Post.findOne(post.id, { relations: ["creator"] })) as Post;
   }
 
-  @Mutation(() => Post)
+  @Mutation(() => Post, { nullable: true })
   @UseMiddleware(isAuth)
   async updatePost(
     @Arg("title", { nullable: true }) title: string,
@@ -171,10 +171,7 @@ export default class PostResolver {
     @Arg("id", () => Int) id: number,
     @Ctx() { userId }: ContextType
   ): Promise<Post | null> {
-    const post = await Post.findOne(
-      { id, creatorId: userId },
-      { relations: ["creator"] }
-    );
+    const post = await Post.findOne({ id, creatorId: userId });
     if (!post) return null;
     title && (post.title = title);
     text && (post.text = text);
