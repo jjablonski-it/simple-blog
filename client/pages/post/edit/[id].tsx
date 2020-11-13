@@ -17,20 +17,15 @@ import {
 import NextLink from "next/link";
 import { Formik } from "formik";
 import InputField from "../../../components/InputField";
+import usePostFromUrl from "../../../hooks/usePostFromUrl";
 
 export default function Post(): ReactElement {
-  const router = useRouter();
-  let postId =
-    typeof router.query.id === "string" ? parseInt(router.query.id) : -1;
-
-  const { data, loading } = usePostQuery({
-    variables: { id: postId },
-    skip: postId < 0,
-  });
-
+  const { post } = usePostFromUrl();
   const [updatePost] = useUpdatePostMutation();
 
-  const post = data?.post;
+  const router = useRouter();
+
+  const postId = post?.id;
 
   if (!post)
     return (

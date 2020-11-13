@@ -1,14 +1,9 @@
 import { Container } from "@material-ui/core";
-import { NextPage } from "next";
 import QuickForm from "../components/QuickForm";
 import {
   CreatePostDocument,
   PaginatedPosts,
-  PostsDocument,
-  PostsQuery,
   RegularPostFragment,
-  RegularPostFragmentDoc,
-  ReguralUserFragment,
   ReguralUserFragmentDoc,
 } from "../generated/graphql";
 import useIsAuth from "../hooks/useIsAuth";

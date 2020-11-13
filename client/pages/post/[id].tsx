@@ -13,14 +13,8 @@ import { usePostQuery } from "../../generated/graphql";
 import NextLink from "next/link";
 
 export default function Post(): ReactElement {
-  const router = useRouter();
-  let postId =
-    typeof router.query.id === "string" ? parseInt(router.query.id) : -1;
-  const { data, loading } = usePostQuery({
-    variables: { id: postId },
-    skip: postId < 0,
-  });
-  const post = data?.post;
+  const { post } = usePostFromUrl();
+  const postId = post?.id;
 
   if (!post)
     return (
