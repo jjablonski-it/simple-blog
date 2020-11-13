@@ -6,11 +6,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import { motion } from "framer-motion";
-import { useRouter } from "next/router";
+import NextLink from "next/link";
 import React, { ReactElement } from "react";
 import Updoot from "../../components/Posts/Upvote";
-import { usePostQuery } from "../../generated/graphql";
-import NextLink from "next/link";
+import usePostFromUrl from "../../hooks/usePostFromUrl";
 
 export default function Post(): ReactElement {
   const { post } = usePostFromUrl();
