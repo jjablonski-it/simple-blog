@@ -14,8 +14,8 @@ import {
   RegularPostFragment,
   useDeleteMutation,
 } from "../../generated/graphql";
-import Updoot from "./Updoot";
-import { Remove } from "@material-ui/icons";
+import Updoot from "./Upvote";
+import { Edit, Remove } from "@material-ui/icons";
 import Posts from ".";
 
 interface Props {
@@ -68,6 +68,7 @@ function Post({ post, index, prevCount }: Props) {
               style={{ position: "relative" }}
             >
               <IconButton
+                size="small"
                 style={{ position: "absolute", right: 0 }}
                 onClick={() =>
                   deletePost({
@@ -92,6 +93,14 @@ function Post({ post, index, prevCount }: Props) {
                 }
               >
                 <Remove color="secondary" fontSize="small" />
+              </IconButton>
+              <IconButton
+                size="small"
+                style={{ position: "absolute", right: 0, top: 30 }}
+              >
+                <NextLink href={`/post/edit/[id]`} as={`/post/edit/${post.id}`}>
+                  <Edit color="secondary" fontSize="small" />
+                </NextLink>
               </IconButton>
               <Grid item container direction="column" alignItems="center" xs>
                 <Updoot post={post} />

@@ -1,7 +1,7 @@
 import { ConnectionOptions } from "typeorm";
 import Post from "../entities/Post";
 import User from "../entities/User";
-import Updoot from "../entities/Updoot";
+import Updoot from "../entities/Upvote";
 
 export default {
   type: "postgres",

@@ -1,4 +1,10 @@
-import { Box, FormControl, TextField, TextFieldProps } from "@material-ui/core";
+import {
+  Box,
+  FormControl,
+  FormLabel,
+  TextField,
+  TextFieldProps,
+} from "@material-ui/core";
 import { useField } from "formik";
 import React, { InputHTMLAttributes } from "react";
 
@@ -14,7 +20,7 @@ const InputField = (props: Props) => {
   return (
     <Box my={2}>
       <FormControl fullWidth>
-        {/* <FormLabel htmlFor={name}>{name}</FormLabel> */}
+        <FormLabel htmlFor={name}>{name}</FormLabel>
         <TextField
           {...field}
           id={name}

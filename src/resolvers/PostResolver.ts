@@ -14,7 +14,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { LessThan } from "typeorm";
-import Updoot from "../entities/Updoot";
+import Updoot from "../entities/Upvote";
 import Post from "../entities/Post";
 import User from "../entities/User";
 import isAuth from "../middleware/isAuth";
@@ -164,14 +164,22 @@ export default class PostResolver {
   }
 
   @Mutation(() => Post)
+  @UseMiddleware(isAuth)
   async updatePost(
-    @Arg("title") title: string,
-    @Arg("id") id: number
+    @Arg("title", { nullable: true }) title: string,
+    @Arg("text", { nullable: true }) text: string,
+    @Arg("id", () => Int) id: number,
+    @Ctx() { userId }: ContextType
   ): Promise<Post | null> {
-    const post = await Post.findOne(id);
+    const post = await Post.findOne(
+      { id, creatorId: userId },
+      { relations: ["creator"] }
+    );
     if (!post) return null;
-    post.title = title;
-    post.save();
+    title && (post.title = title);
+    text && (post.text = text);
+    await post.save();
+
     return post;
   }
 
