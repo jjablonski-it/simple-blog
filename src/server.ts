@@ -12,6 +12,7 @@ import { PORT } from "./config/main";
 import dbConfig from "./config/db";
 import UserResolver from "./resolvers/UserResolver";
 import PostResolver from "./resolvers/PostResolver";
+import generateUserLoader from "./utils/generateUserLoader";
 
 (async () => {
   const MongoStore = connectMongo(session);
@@ -41,7 +42,7 @@ import PostResolver from "./resolvers/PostResolver";
       resolvers: [PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => ({ req, res, userLoader: generateUserLoader() }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });

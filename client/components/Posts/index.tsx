@@ -9,7 +9,7 @@ import React, { ReactElement } from "react";
 import { usePostsQuery } from "../../generated/graphql";
 import Post from "./Post";
 
-const limit = 10;
+const limit = 20;
 let prevCount = 0;
 
 export default function Posts(): ReactElement {

@@ -51,7 +51,7 @@ Home.getInitialProps = async (ctx) => {
 
   await apolloClient.query({
     query: PostsDocument,
-    variables: { limit: 10 },
+    variables: { limit: 20 },
   });
 
   return {

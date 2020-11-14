@@ -69,6 +69,12 @@ export default class PostResolver {
     return null;
   }
 
+  @FieldResolver(() => User)
+  async creator(@Root() post: Post, @Ctx() { userLoader }: ContextType) {
+    // return await User.findOne(post.creatorId);
+    return userLoader.load(post.creatorId);
+  }
+
   @Query(() => String!)
   test() {
     return "OK 👌";
@@ -116,35 +122,22 @@ export default class PostResolver {
     const realLimit = Math.min(50, limit) + 1;
     const whereClause = cursor ? { where: { id: LessThan(cursor) } } : {};
     const posts = await Post.find({
-      relations: ["creator"],
+      // relations: ["creator"],
       take: realLimit,
       order: { createdAt: "DESC" },
       ...whereClause,
     });
 
-    //TODO improve this shit
-
-    const postsWithCreator = await Promise.all(
-      posts.map(
-        async (post): Promise<any> => {
-          const user = await User.findOne({ id: post.creatorId });
-          if (!user) return post;
-
-          post.creator = user;
-          return post;
-        }
-      )
-    );
-
     return {
-      posts: postsWithCreator.slice(0, realLimit - 1),
+      posts: posts.slice(0, realLimit - 1),
       hasMore: posts.length === realLimit,
     };
   }
 
   @Query(() => Post, { nullable: true })
   async post(@Arg("id", () => Int) id: number) {
-    return await Post.findOne(id, { relations: ["creator"] });
+    // return await Post.findOne(id, { relations: ["creator"] });
+    return await Post.findOne(id);
   }
 
   @Mutation(() => Post)
@@ -160,7 +153,8 @@ export default class PostResolver {
 
     console.log("post", post.id);
 
-    return (await Post.findOne(post.id, { relations: ["creator"] })) as Post;
+    // return (await Post.findOne(post.id, { relations: ["creator"] })) as Post;
+    return post;
   }
 
   @Mutation(() => Post, { nullable: true })
