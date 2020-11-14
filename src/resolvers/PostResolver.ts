@@ -56,17 +56,12 @@ export default class PostResolver {
   }
 
   @FieldResolver(() => Int, { nullable: true })
-  async voteStatus(@Root() post: Post, @Ctx() { req }: ContextType) {
+  async voteStatus(
+    @Root() post: Post,
+    @Ctx() { req, voteStatusLoader }: ContextType
+  ) {
     const { userId } = req.session;
-    console.log("vote status, userId: ", userId);
-
-    if (userId) {
-      const updoot = await Updoot.findOne({ userId, postId: post.id });
-      if (updoot) {
-        return updoot.value;
-      }
-    }
-    return null;
+    return voteStatusLoader.load({ userId, postId: post.id });
   }
 
   @FieldResolver(() => User)

@@ -1,18 +1,18 @@
-import "reflect-metadata";
-import express from "express";
-import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
-import { buildSchema } from "type-graphql";
 import connectMongo from "connect-mongo";
-import session from "express-session";
 import cors from "cors";
-
+import express from "express";
+import session from "express-session";
+import "reflect-metadata";
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
+import dbConfig from "./config/db";
 // Config
 import { PORT } from "./config/main";
-import dbConfig from "./config/db";
-import UserResolver from "./resolvers/UserResolver";
 import PostResolver from "./resolvers/PostResolver";
-import generateUserLoader from "./utils/generateUserLoader";
+import UserResolver from "./resolvers/UserResolver";
+import createUserLoader from "./utils/createUserLoader";
+import createVoteStatusLoader from "./utils/createVoteStatusLoader";
 
 (async () => {
   const MongoStore = connectMongo(session);
@@ -42,7 +42,12 @@ import generateUserLoader from "./utils/generateUserLoader";
       resolvers: [PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res, userLoader: generateUserLoader() }),
+    context: ({ req, res }) => ({
+      req,
+      res,
+      userLoader: createUserLoader(),
+      voteStatusLoader: createVoteStatusLoader(),
+    }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });

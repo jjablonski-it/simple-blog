@@ -10,6 +10,6 @@ export default {
   password: "123",
   entities: [Post, User, Updoot],
   synchronize: true,
-  logging: false,
+  logging: true,
 } as ConnectionOptions;
 // Parameters<typeof createConnection>[0];
