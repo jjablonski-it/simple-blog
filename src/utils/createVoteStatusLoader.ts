@@ -5,7 +5,7 @@ type Input = { userId: number; postId: number }[];
 
 export default () =>
   new DataLoader<Input[0], number | null>(async (input) => {
-    const upvotes = await Updoot.find({ where: [...input] });
+    const upvotes = await Updoot.findByIds(input as Input);
 
     const res = input.map(
       ({ userId, postId }) =>

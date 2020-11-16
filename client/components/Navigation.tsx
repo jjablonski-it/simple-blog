@@ -7,12 +7,12 @@ import {
   useLogoutMutation,
   useMeQuery,
 } from "../generated/graphql";
+import { useRouter } from "next/router";
 
-interface Props {}
-
-const Navigation = (props: Props) => {
+const Navigation = () => {
   const { data, loading } = useMeQuery();
   const [logout] = useLogoutMutation();
+  const router = useRouter();
 
   let body: any = null;
 
@@ -52,8 +52,8 @@ const Navigation = (props: Props) => {
           </NextLink>
           <Button
             variant="text"
-            onClick={() =>
-              logout({
+            onClick={async () => {
+              await logout({
                 update: (store) => {
                   store.writeQuery<MeQuery>({
                     query: MeDocument,
@@ -62,8 +62,9 @@ const Navigation = (props: Props) => {
                     },
                   });
                 },
-              })
-            }
+              });
+              router.reload();
+            }}
           >
             Logout
           </Button>

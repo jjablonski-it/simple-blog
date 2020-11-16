@@ -1,15 +1,15 @@
 import { motion } from "framer-motion";
 import Posts from "../components/Posts";
 import { PostsDocument } from "../generated/graphql";
-import useIsAuth from "../hooks/useIsAuth";
+// import useIsAuth from "../hooks/useIsAuth";
 import { initializeApollo } from "../lib/apolloClient";
 import styles from "../styles/test.module.css";
 
 const Home = () => {
-  const { data, error } = useIsAuth();
+  // const { data, error } = useIsAuth();
 
   // if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {JSON.stringify(error)}:</div>;
+  // if (error) return <div>Error: {JSON.stringify(error)}:</div>;
 
   return (
     <>
@@ -20,7 +20,7 @@ const Home = () => {
           // transition: { duration: 1 },
         }}
       >
-        <pre className={styles.testClass}>{JSON.stringify(data, null, 4)}</pre>
+        {/* <pre className={styles.testClass}>{JSON.stringify(data, null, 4)}</pre> */}
       </motion.div>
       <Posts />
     </>
