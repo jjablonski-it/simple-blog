@@ -15,10 +15,10 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  me?: Maybe<User>;
   test: Scalars['String'];
   posts: PaginatedPosts;
   post?: Maybe<Post>;
+  me?: Maybe<User>;
 };
 
 
@@ -32,14 +32,10 @@ export type QueryPostArgs = {
   id: Scalars['Int'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['Float'];
-  username: Scalars['String'];
+export type PaginatedPosts = {
+  __typename?: 'PaginatedPosts';
   posts: Array<Post>;
-  upvotes: Array<Updoot>;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
+  hasMore: Scalars['Boolean'];
 };
 
 export type Post = {
@@ -55,6 +51,16 @@ export type Post = {
   updatedAt: Scalars['DateTime'];
   textSnippet: PostText;
   voteStatus?: Maybe<Scalars['Int']>;
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['Float'];
+  username: Scalars['String'];
+  posts: Array<Post>;
+  upvotes: Array<Updoot>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Updoot = {
@@ -75,31 +81,15 @@ export type PostText = {
   hasMore: Scalars['Boolean'];
 };
 
-export type PaginatedPosts = {
-  __typename?: 'PaginatedPosts';
-  posts: Array<Post>;
-  hasMore: Scalars['Boolean'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  login?: Maybe<UserResponse>;
-  register: UserResponse;
-  logout: Scalars['Boolean'];
   upvote: Post;
   createPost: Post;
   updatePost?: Maybe<Post>;
   deletePost: Scalars['Boolean'];
-};
-
-
-export type MutationLoginArgs = {
-  input: UsernamePasswordInput;
-};
-
-
-export type MutationRegisterArgs = {
-  input: UsernamePasswordInput;
+  login?: Maybe<UserResponse>;
+  register: UserResponse;
+  logout: Scalars['Boolean'];
 };
 
 
@@ -125,6 +115,21 @@ export type MutationDeletePostArgs = {
   id: Scalars['Int'];
 };
 
+
+export type MutationLoginArgs = {
+  input: UsernamePasswordInput;
+};
+
+
+export type MutationRegisterArgs = {
+  input: UsernamePasswordInput;
+};
+
+export type PostInput = {
+  title: Scalars['String'];
+  text: Scalars['String'];
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   error?: Maybe<Error>;
@@ -142,11 +147,6 @@ export type UsernamePasswordInput = {
   password: Scalars['String'];
 };
 
-export type PostInput = {
-  title: Scalars['String'];
-  text: Scalars['String'];
-};
-
 export type RegularPostFragment = (
   { __typename?: 'Post' }
   & Pick<Post, 'id' | 'title' | 'points' | 'voteStatus'>
@@ -155,7 +155,7 @@ export type RegularPostFragment = (
     & Pick<PostText, 'text' | 'hasMore'>
   ), creator: (
     { __typename?: 'User' }
-    & Pick<User, 'username'>
+    & Pick<User, 'id' | 'username'>
   ) }
 );
 
@@ -323,6 +323,7 @@ export const RegularPostFragmentDoc = gql`
   points
   voteStatus
   creator {
+    id
     username
   }
 }

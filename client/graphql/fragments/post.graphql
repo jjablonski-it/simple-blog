@@ -8,6 +8,7 @@ fragment RegularPost on Post {
   points
   voteStatus
   creator {
+    id
     username
   }
 }
