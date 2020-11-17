@@ -19,7 +19,7 @@ const useMyPostsQuery = (
 
   const posts = data?.posts.posts || [];
   const length = posts?.length || 0;
-  const cursor = posts[length - 1].id || null;
+  const cursor = (posts && posts[length - 1].id) || null;
 
   return { ...result, posts, length, cursor, limit };
 };

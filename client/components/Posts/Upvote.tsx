@@ -1,8 +1,8 @@
 import { IconButton, Typography } from "@material-ui/core";
 import { ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
+import { useRouter } from "next/router";
 import React, { ReactElement } from "react";
 import {
-  Post,
   RegularPostFragment,
   useUpvoteMutation,
 } from "../../generated/graphql";
@@ -12,14 +12,11 @@ interface Props {
 }
 
 function Updoot({ post }: Props): ReactElement {
+  const router = useRouter();
   const [upvotePost] = useUpvoteMutation({
-    // update: (cache, { data }) => {
-    //   const postFrag = cache.readFragment<RegularPostFragment>({
-    //     fragment: RegularPostFragmentDoc,
-    //     id: "Post:" + post.id,
-    //   });
-    //   if(!postFrag) return;
-    // },
+    onError: (e) => {
+      router.replace("/login?next=" + router.pathname);
+    },
   });
 
   return (
