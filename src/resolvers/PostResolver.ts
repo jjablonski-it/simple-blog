@@ -14,8 +14,8 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { LessThan } from "typeorm";
-import Updoot from "../entities/Upvote";
 import Post from "../entities/Post";
+import Updoot from "../entities/Upvote";
 import User from "../entities/User";
 import isAuth from "../middleware/isAuth";
 
@@ -61,12 +61,12 @@ export default class PostResolver {
     @Ctx() { req, voteStatusLoader }: ContextType
   ) {
     const { userId } = req.session;
+
     return voteStatusLoader.load({ userId, postId: post.id });
   }
 
   @FieldResolver(() => User)
   async creator(@Root() post: Post, @Ctx() { userLoader }: ContextType) {
-    // return await User.findOne(post.creatorId);
     return userLoader.load(post.creatorId);
   }
 
@@ -117,7 +117,6 @@ export default class PostResolver {
     const realLimit = Math.min(50, limit) + 1;
     const whereClause = cursor ? { where: { id: LessThan(cursor) } } : {};
     const posts = await Post.find({
-      // relations: ["creator"],
       take: realLimit,
       order: { createdAt: "DESC" },
       ...whereClause,
@@ -131,7 +130,6 @@ export default class PostResolver {
 
   @Query(() => Post, { nullable: true })
   async post(@Arg("id", () => Int) id: number) {
-    // return await Post.findOne(id, { relations: ["creator"] });
     return await Post.findOne(id);
   }
 
@@ -146,9 +144,6 @@ export default class PostResolver {
       creatorId: userId,
     }).save();
 
-    console.log("post", post.id);
-
-    // return (await Post.findOne(post.id, { relations: ["creator"] })) as Post;
     return post;
   }
 

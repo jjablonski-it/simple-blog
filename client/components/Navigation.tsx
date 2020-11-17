@@ -1,18 +1,19 @@
-import React from "react";
 import { Box, Button, Grid, Link } from "@material-ui/core";
 import NextLink from "next/link";
+import React from "react";
 import {
   MeDocument,
   MeQuery,
+  PostsDocument,
   useLogoutMutation,
   useMeQuery,
 } from "../generated/graphql";
-import { useRouter } from "next/router";
+import useMyPostsQuery from "../hooks/useMyPostsQuery";
 
 const Navigation = () => {
   const { data, loading } = useMeQuery();
   const [logout] = useLogoutMutation();
-  const router = useRouter();
+  const { length } = useMyPostsQuery();
 
   let body: any = null;
 
@@ -62,8 +63,11 @@ const Navigation = () => {
                     },
                   });
                 },
+                refetchQueries: [
+                  { query: PostsDocument, variables: { limit: length } },
+                ],
+                awaitRefetchQueries: true,
               });
-              router.reload();
             }}
           >
             Logout

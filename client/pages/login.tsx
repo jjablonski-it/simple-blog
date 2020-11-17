@@ -1,16 +1,19 @@
-import { Form, Formik } from "formik";
 import { Button, Grid } from "@material-ui/core";
+import { Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import InputField from "../components/InputField";
 import {
   MeDocument,
   MeQuery,
+  PostsDocument,
   ReguralUserFragment,
   useLoginMutation,
 } from "../generated/graphql";
-import { useRouter } from "next/router";
+import useMyPostsQuery from "../hooks/useMyPostsQuery";
 
 const Login = () => {
-  const [login, { error, data }] = useLoginMutation();
+  const [login, { error }] = useLoginMutation();
+  const { length } = useMyPostsQuery();
   const router = useRouter();
   const { next } = router.query;
 
@@ -24,11 +27,8 @@ const Login = () => {
           const { username, password } = values;
           const res = await login({
             variables: { input: { username, password } },
-            // refetchQueries: [{ query: MeDocument }],
-            update: (store, { data }) => {
-              // const me: any = store.readQuery<MeQuery>({
-              //   query: MeDocument,
-              // });
+
+            update: async (store, { data }) => {
               if (!data?.login?.error) {
                 const me = data?.login?.user as ReguralUserFragment;
 
@@ -38,16 +38,12 @@ const Login = () => {
                     me,
                   },
                 });
-
-                // store.writeFragment<ReguralUserFragment>({
-                //   fragment: ReguralUserFragmentDoc,
-                //   id: me.id.toString(),
-                //   data: {
-                //     ...me,
-                //   },
-                // });
               }
             },
+            refetchQueries: [
+              { query: PostsDocument, variables: { limit: length } },
+            ],
+            awaitRefetchQueries: true,
           });
 
           const error = res.data?.login?.error;
@@ -68,7 +64,6 @@ const Login = () => {
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Submit
             </Button>
-            <pre>{JSON.stringify(values)}</pre>
           </Form>
         )}
       </Formik>

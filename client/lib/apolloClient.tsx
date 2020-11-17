@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import {
   ApolloCache,
   ApolloClient,
@@ -8,11 +7,9 @@ import {
   NormalizedCacheObject,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
-import { useRouter } from "next/router";
-import { concatPagination } from "@apollo/client/utilities";
-import { PaginatedPosts, PostsQueryResult } from "../generated/graphql";
 import { Request } from "express";
-// import { concatPagination } from "@apollo/client/utilities";
+import { useMemo } from "react";
+import { PaginatedPosts } from "../generated/graphql";
 
 type AClient = ApolloClient<NormalizedCacheObject>;
 
@@ -52,18 +49,18 @@ function createApolloClient(req: Request | null = null) {
         Query: {
           fields: {
             posts: {
-              merge: (
-                existing: PaginatedPosts,
-                incoming: PaginatedPosts
-              ): PaginatedPosts | {} => {
+              merge: (existing, incoming): PaginatedPosts | {} => {
+                if (!existing) return incoming;
+
+                if (existing.posts[0].__ref === incoming.posts[0].__ref)
+                  return incoming;
+
                 const existingPosts = existing?.posts || [];
                 const combinedPosts = [...existingPosts, ...incoming.posts];
 
-                if (!existing) return incoming;
-
                 return { ...incoming, posts: combinedPosts };
               },
-              read: (e) => e,
+              read: (p) => p,
             },
           },
         },

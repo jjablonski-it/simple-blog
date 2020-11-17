@@ -20,7 +20,7 @@ const InputField = (props: Props) => {
   return (
     <Box my={2}>
       <FormControl fullWidth>
-        <FormLabel htmlFor={name}>{name}</FormLabel>
+        {/* <FormLabel htmlFor={name}>{name}</FormLabel> */}
         <TextField
           {...field}
           id={name}
