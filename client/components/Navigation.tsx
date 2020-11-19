@@ -75,14 +75,16 @@ const Navigation = () => {
   }
 
   return (
-    <AppBar color="primary" position="fixed">
-      <Toolbar variant="dense">
-        <Typography variant="h5">Logo</Typography>
-        <Grid container spacing={1} justify="flex-end" alignItems="center">
-          {body}
-        </Grid>
-      </Toolbar>
-    </AppBar>
+    <Box mb={8}>
+      <AppBar color="primary" position="fixed">
+        <Toolbar variant="dense">
+          <Typography variant="h5">Logo</Typography>
+          <Grid container spacing={1} justify="flex-end" alignItems="center">
+            {body}
+          </Grid>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 };
 
