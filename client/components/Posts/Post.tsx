@@ -32,7 +32,6 @@ function Post({ post, index, prevCount }: Props) {
       key={post.id}
       style={{
         margin: "5px",
-        cursor: "grab",
         flexGrow: 1,
         minWidth: "20%",
       }}
