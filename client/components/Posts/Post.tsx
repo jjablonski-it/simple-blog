@@ -14,7 +14,7 @@ interface Props {
 
 const variants = {
   init: { opacity: 0, y: -50 },
-  anim: (custom) => ({
+  anim: (custom: number) => ({
     opacity: 1,
     y: 0,
     transition: {
@@ -25,14 +25,10 @@ const variants = {
 
 function Post({ post, index, prevCount }: Props) {
   const { data } = useMeQuery();
-  // const [blured, setBlured] = useState(false);
 
   return (
     <motion.div
-      drag
       layout
-      // onAnimationStart={() => setBlured(true)}
-      // onLayoutAnimationComplete={() => setBlured(false)}
       key={post.id}
       style={{
         margin: "5px",

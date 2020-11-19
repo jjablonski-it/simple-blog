@@ -1,4 +1,11 @@
-import { Box, Button, Grid, Link } from "@material-ui/core";
+import {
+  AppBar,
+  Box,
+  Button,
+  Grid,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
 import NextLink from "next/link";
 import React from "react";
 import {
@@ -15,74 +22,67 @@ const Navigation = () => {
   const [logout] = useLogoutMutation();
   const { length } = useMyPostsQuery();
 
-  let body: any = null;
+  let body = <></>;
 
   if (loading) {
-    body = <div>Loading</div>;
+    body = <>Loading...</>;
   } else if (!data?.me) {
     body = (
       <>
-        <Grid item>
-          <NextLink href="/">
-            <Link variant="h5">Main</Link>
-          </NextLink>
-        </Grid>
-        <Grid item>
-          <NextLink href="/login">
-            <Link variant="h5">Login</Link>
-          </NextLink>
-        </Grid>
-        <Grid item>
-          <NextLink href="/register">
-            <Link variant="h5">Register</Link>
-          </NextLink>
-        </Grid>
+        <NextLink href="/">
+          <Button>Main</Button>
+        </NextLink>
+        <NextLink href="/login">
+          <Button>Login</Button>
+        </NextLink>
+        <NextLink href="/register">
+          <Button>Register</Button>
+        </NextLink>
       </>
     );
   } else {
     body = (
       <>
-        <Grid item>
-          <NextLink href="/">
-            <Link variant="h5">{data.me.username}</Link>
-          </NextLink>
-        </Grid>
-        <Grid item>
-          <NextLink href="/create-post">
-            <Link variant="h5">Create post</Link>
-          </NextLink>
-          <Button
-            variant="text"
-            onClick={async () => {
-              await logout({
-                update: (store) => {
-                  store.writeQuery<MeQuery>({
-                    query: MeDocument,
-                    data: {
-                      me: null,
-                    },
-                  });
-                },
-                refetchQueries: [
-                  { query: PostsDocument, variables: { limit: length } },
-                ],
-                awaitRefetchQueries: true,
-              });
-            }}
-          >
-            Logout
-          </Button>
-        </Grid>
+        <NextLink href="/">
+          <Button>{data.me.username}</Button>
+        </NextLink>
+        <NextLink href="/create-post">
+          <Button>Create post</Button>
+        </NextLink>
+        <Button
+          variant="text"
+          onClick={async () => {
+            await logout({
+              update: (store) => {
+                store.writeQuery<MeQuery>({
+                  query: MeDocument,
+                  data: {
+                    me: null,
+                  },
+                });
+              },
+              refetchQueries: [
+                { query: PostsDocument, variables: { limit: length } },
+              ],
+              awaitRefetchQueries: true,
+            });
+          }}
+        >
+          Logout
+        </Button>
       </>
     );
   }
 
   return (
-    <Box p={3} bgcolor="#a1a1a1">
-      <Grid container spacing={1} justify="flex-end" alignItems="center">
-        {body}
-      </Grid>
-    </Box>
+    <AppBar color="primary" position="fixed">
+      <Toolbar variant="dense">
+        <Typography variant="h5">Logo</Typography>
+        <Grid container spacing={1} justify="flex-end" alignItems="center">
+          {body}
+        </Grid>
+      </Toolbar>
+    </AppBar>
   );
 };
 

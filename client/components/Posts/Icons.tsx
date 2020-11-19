@@ -4,6 +4,7 @@ import React, { ReactElement } from "react";
 import NextLink from "next/link";
 
 import {
+  Post,
   RegularPostFragment,
   useDeleteMutation,
 } from "../../generated/graphql";
@@ -28,7 +29,7 @@ export default function Icons({ post }: Props): ReactElement {
                 fields: {
                   posts: (existing = {}, { readField }) => {
                     const posts = existing.posts.filter(
-                      (p) => readField("id", p) !== post.id
+                      (p: Post) => readField("id", p) !== post.id
                     );
 
                     const res = { ...existing, posts };

@@ -39,8 +39,6 @@ const Register = () => {
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Submit
             </Button>
-            <pre>{JSON.stringify(values)}</pre>
-            <pre>{JSON.stringify(data?.register.user?.username)}</pre>
           </Form>
         )}
       </Formik>

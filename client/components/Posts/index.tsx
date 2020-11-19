@@ -51,7 +51,7 @@ export default function Posts(): ReactElement {
   if (!data && loading) return <Typography variant="h1">LOADING</Typography>;
 
   return (
-    <Box mt={3}>
+    <Box mt={8}>
       <Grid container spacing={1} justify="center">
         {posts?.map((post, i) => (
           <Post key={i} post={post} index={i} prevCount={prevCount} />
