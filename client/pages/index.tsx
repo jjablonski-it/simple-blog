@@ -24,11 +24,18 @@ const Home = () => {
 
 Home.getInitialProps = async (ctx) => {
   if (!ctx.req) return {};
-  const apolloClient = initializeApollo(undefined, ctx.req);
+  console.log("ctx.req.headers.cookie", ctx.req.headers.cookie);
+
+  const apolloClient = initializeApollo();
 
   await apolloClient.query({
     query: PostsDocument,
     variables: { limit: 20 },
+    context: {
+      headers: {
+        cookie: ctx.req.headers.cookie,
+      },
+    },
   });
 
   return {

@@ -31,10 +31,7 @@ const errorLink = onError(({ graphQLErrors, networkError, response }) => {
   if (response) console.log("[response]", response);
 });
 
-function createApolloClient(req: Request | null = null) {
-  let cookie: String | undefined = "";
-  if (req) cookie = req.headers.cookie;
-  console.log("cookie: ", cookie);
+function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: ApolloLink.from([
@@ -42,7 +39,6 @@ function createApolloClient(req: Request | null = null) {
       new HttpLink({
         uri: "http://localhost:4000/graphql", // Server URL (must be absolute)
         credentials: "include", // Additional fetch() options like `credentials` or `headers`
-        headers: req ? { cookie } : undefined,
       }),
     ]),
     cache: new InMemoryCache({
@@ -71,10 +67,9 @@ function createApolloClient(req: Request | null = null) {
 }
 
 export function initializeApollo(
-  initialState: ApolloCache<InMemoryCache> | null = null,
-  request: Request | null = null
+  initialState: ApolloCache<InMemoryCache> | null = null
 ): AClient {
-  const _apolloClient = apolloClient ?? createApolloClient(request);
+  const _apolloClient = apolloClient ?? createApolloClient();
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // gets hydrated here
