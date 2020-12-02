@@ -34,6 +34,7 @@ const errorLink = onError(({ graphQLErrors, networkError, response }) => {
 function createApolloClient(req: Request | null = null) {
   let cookie: String | undefined = "";
   if (req) cookie = req.headers.cookie;
+  console.log("cookie: ", cookie);
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: ApolloLink.from([
