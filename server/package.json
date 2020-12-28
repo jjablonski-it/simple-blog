@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "main": "server.js",
   "description": "Boilerplate for pern stack applications with graphql and apollo",
+  "engines": {
+    "node": "14.x",
+    "yarn": "1.x"
+  },
   "scripts": {
     "start": "node build/server.js",
     "build": "tsc",
     "watch": "tsc -w",
     "mon": "nodemon build/server.js",
-    "dev": "concurrently \"tsc -w\" \"nodemon build/server.js\""
+    "dev": "concurrently \"tsc -w\" \"nodemon build/server.js\"",
+    "heroku-postbuild": "yarn global add typescript && yarn && yarn run build"
   },
   "license": "MIT",
   "dependencies": {
