@@ -9,7 +9,7 @@ import {
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { ReactElement } from "react";
-import Updoot from "../../../components/Posts/Upvote";
+import Upvote from "../../../components/Posts/Upvote";
 import {
   usePostQuery,
   useUpdatePostMutation,

@@ -8,11 +8,14 @@ import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import dbConfig from "./config/db";
 // Config
-import { PORT } from "./config/main";
+import dotenv from "dotenv";
 import PostResolver from "./resolvers/PostResolver";
 import UserResolver from "./resolvers/UserResolver";
 import createUserLoader from "./utils/createUserLoader";
 import createVoteStatusLoader from "./utils/createVoteStatusLoader";
+
+dotenv.config();
+const { PORT } = process.env;
 
 (async () => {
   const MongoStore = connectMongo(session);

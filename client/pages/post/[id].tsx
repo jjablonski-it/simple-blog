@@ -8,7 +8,7 @@ import {
 import { motion } from "framer-motion";
 import NextLink from "next/link";
 import React, { ReactElement } from "react";
-import Updoot from "../../components/Posts/Upvote";
+import Upvote from "../../components/Posts/Upvote";
 import usePostFromUrl from "../../hooks/usePostFromUrl";
 
 export default function Post(): ReactElement {
@@ -29,7 +29,7 @@ export default function Post(): ReactElement {
           <CardContent>
             <Grid container wrap="nowrap" spacing={1}>
               <Grid item container direction="column" alignItems="center" xs>
-                <Updoot post={post} />
+                <Upvote post={post} />
               </Grid>
               <Grid item xs={10}>
                 <Typography>

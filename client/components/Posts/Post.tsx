@@ -4,7 +4,7 @@ import NextLink from "next/link";
 import React from "react";
 import { RegularPostFragment, useMeQuery } from "../../generated/graphql";
 import Icons from "./Icons";
-import Updoot from "./Upvote";
+import Upvote from "./Upvote";
 
 interface Props {
   post: RegularPostFragment;
@@ -52,7 +52,7 @@ function Post({ post, index, prevCount }: Props) {
             >
               {data?.me?.id === post.creator.id && <Icons post={post} />}
               <Grid item container direction="column" alignItems="center" xs>
-                <Updoot post={post} />
+                <Upvote post={post} />
               </Grid>
               <Grid item xs={10}>
                 <NextLink href="/post/[id]" as={`/post/${post.id}`}>

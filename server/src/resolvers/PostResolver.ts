@@ -15,7 +15,7 @@ import {
 } from "type-graphql";
 import { LessThan } from "typeorm";
 import Post from "../entities/Post";
-import Updoot from "../entities/Upvote";
+import Upvote from "../entities/Upvote";
 import User from "../entities/User";
 import isAuth from "../middleware/isAuth";
 
@@ -88,22 +88,22 @@ export default class PostResolver {
     const post = await Post.findOne(postId, { relations: ["creator"] });
     if (!post) throw Error("Post does not exist");
 
-    const existingUpdoot = await Updoot.findOne({ postId, userId });
+    const existingUpvote = await Upvote.findOne({ postId, userId });
 
-    if (existingUpdoot) {
-      if (existingUpdoot.value === finalValue) {
+    if (existingUpvote) {
+      if (existingUpvote.value === finalValue) {
         // Same vote
-        await existingUpdoot.remove();
+        await existingUpvote.remove();
         post.points -= finalValue;
       } else {
-        existingUpdoot.value = finalValue;
+        existingUpvote.value = finalValue;
         post.points += finalValue * 2;
-        await existingUpdoot.save();
+        await existingUpvote.save();
       }
     } else {
       post.points += finalValue;
 
-      await Updoot.insert({ value: finalValue, postId, userId });
+      await Upvote.insert({ value: finalValue, postId, userId });
     }
     await post.save();
     return post;

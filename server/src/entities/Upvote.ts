@@ -13,7 +13,7 @@ import User from "./User";
 
 @ObjectType()
 @Entity()
-export default class Updoot extends BaseEntity {
+export default class Upvote extends BaseEntity {
   @Field()
   @Column({ type: "smallint", default: 1 })
   value!: number;

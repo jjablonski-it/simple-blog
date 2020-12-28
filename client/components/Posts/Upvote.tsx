@@ -11,7 +11,7 @@ interface Props {
   post: RegularPostFragment | any;
 }
 
-function Updoot({ post }: Props): ReactElement {
+function Upvote({ post }: Props): ReactElement {
   const router = useRouter();
   const [upvotePost] = useUpvoteMutation({
     onError: (e) => {
@@ -48,4 +48,4 @@ function Updoot({ post }: Props): ReactElement {
   );
 }
 
-export default Updoot;
+export default Upvote;
