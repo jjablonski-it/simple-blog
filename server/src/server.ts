@@ -1,5 +1,4 @@
 import { ApolloServer } from "apollo-server-express";
-import connectMongo from "connect-mongo";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
@@ -15,28 +14,38 @@ import createUserLoader from "./utils/createUserLoader";
 import createVoteStatusLoader from "./utils/createVoteStatusLoader";
 
 dotenv.config();
-const { PORT } = process.env;
+const { PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL } = process.env;
+
+const inProd = NODE_ENV === "production";
+console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
 
 (async () => {
-  const MongoStore = connectMongo(session);
+  // const MongoStore = connectMongo(session);
 
   await createConnection(dbConfig);
   const app = express();
+  app.set("proxy", 1);
 
   // Express middleware
-  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+  app.use(
+    cors({
+      origin: inProd ? CLIENT_URL : "http://localhost:3000",
+      credentials: true,
+    })
+  );
 
   app.use(
     session({
       name: "qid",
-      secret: "secret",
+      secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
+        secure: inProd,
       },
-      store: new MongoStore({ url: "mongodb://localhost/tut14_store" }),
+      // store: new MongoStore({ url: "mongodb://localhost/tut14_store" }),
     })
   );
 
@@ -51,6 +60,7 @@ const { PORT } = process.env;
       userLoader: createUserLoader(),
       voteStatusLoader: createVoteStatusLoader(),
     }),
+    playground: true,
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
