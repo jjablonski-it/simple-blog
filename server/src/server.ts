@@ -16,7 +16,7 @@ import createVoteStatusLoader from "./utils/createVoteStatusLoader";
 dotenv.config();
 const { PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL } = process.env;
 
-const inProd = NODE_ENV === "production";
+const _prod = NODE_ENV === "production";
 console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
 
 (async () => {
@@ -29,7 +29,7 @@ console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
   // Express middleware
   app.use(
     cors({
-      origin: inProd ? CLIENT_URL : "http://localhost:3000",
+      origin: _prod ? CLIENT_URL : "http://localhost:3000",
       credentials: true,
     })
   );
@@ -43,7 +43,8 @@ console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
-        secure: inProd,
+        sameSite: _prod ? "none" : "lax",
+        secure: _prod,
       },
       // store: new MongoStore({ url: "mongodb://localhost/tut14_store" }),
     })

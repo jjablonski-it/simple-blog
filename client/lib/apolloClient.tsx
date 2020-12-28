@@ -7,13 +7,14 @@ import {
   NormalizedCacheObject,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
-import { Request } from "express";
 import { useMemo } from "react";
 import { PaginatedPosts } from "../generated/graphql";
 
 type AClient = ApolloClient<NormalizedCacheObject>;
 
 let apolloClient: AClient;
+
+const prod = process.env.NODE_ENV === "production";
 
 const errorLink = onError(({ graphQLErrors, networkError, response }) => {
   if (graphQLErrors) {
@@ -37,7 +38,7 @@ function createApolloClient() {
     link: ApolloLink.from([
       errorLink,
       new HttpLink({
-        uri: "http://localhost:4000/graphql", // Server URL (must be absolute)
+        uri: prod ? process.env.API_URL : "http://localhost:5000/graphql", // Server URL (must be absolute)
         credentials: "include", // Additional fetch() options like `credentials` or `headers`
       }),
     ]),

@@ -24,8 +24,6 @@ const Home = () => {
 
 Home.getInitialProps = async (ctx) => {
   if (!ctx.req) return {};
-  console.log("ctx.req.headers.cookie", ctx.req.headers.cookie);
-
   const apolloClient = initializeApollo();
 
   await apolloClient.query({
