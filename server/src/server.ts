@@ -22,7 +22,7 @@ console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
 (async () => {
   // const MongoStore = connectMongo(session);
 
-  await createConnection(dbConfig);
+  await createConnection(dbConfig).catch((e) => console.log(e));
   const app = express();
   app.set("proxy", 1);
 

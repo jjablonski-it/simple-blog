@@ -14,7 +14,7 @@ type AClient = ApolloClient<NormalizedCacheObject>;
 
 let apolloClient: AClient;
 
-const prod = process.env.NODE_ENV === "production";
+const _prod = process.env.NODE_ENV === "production";
 
 const errorLink = onError(({ graphQLErrors, networkError, response }) => {
   if (graphQLErrors) {
@@ -38,7 +38,7 @@ function createApolloClient() {
     link: ApolloLink.from([
       errorLink,
       new HttpLink({
-        uri: prod ? process.env.API_URL : "http://localhost:5000/graphql", // Server URL (must be absolute)
+        uri: _prod ? process.env.API_URL : "http://localhost:5000/graphql", // Server URL (must be absolute)
         credentials: "include", // Additional fetch() options like `credentials` or `headers`
       }),
     ]),
