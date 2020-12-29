@@ -4,8 +4,8 @@
   "main": "server.js",
   "description": "Boilerplate for pern stack applications with graphql and apollo",
   "engines": {
-    "node": "14.x",
-    "yarn": "1.x"
+    "node": "14.15.1",
+    "yarn": "1.22.5"
   },
   "scripts": {
     "start": "node build/server.js",
@@ -13,7 +13,7 @@
     "watch": "tsc -w",
     "mon": "nodemon build/server.js",
     "dev": "concurrently \"tsc -w\" \"nodemon build/server.js\"",
-    "heroku-postbuild": "yarn global add typescript && yarn && yarn run build"
+    "heroku-postbuild": "yarn && yarn run build"
   },
   "license": "MIT",
   "dependencies": {
