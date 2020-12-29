@@ -151,19 +151,19 @@ export type UsernamePasswordInput = {
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Post, 'id' | 'title' | 'points' | 'voteStatus'>
   & { textSnippet: (
     { __typename?: 'PostText' }
-    & Pick<PostText, '[object Object]' | '[object Object]'>
+    & Pick<PostText, 'text' | 'hasMore'>
   ), creator: (
     { __typename?: 'User' }
-    & Pick<User, '[object Object]' | '[object Object]'>
+    & Pick<User, 'id' | 'username'>
   ) }
 );
 
 export type ReguralUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<User, 'id' | 'username' | 'createdAt'>
 );
 
 export type CreatePostMutationVariables = Exact<{
@@ -186,7 +186,7 @@ export type DeleteMutationVariables = Exact<{
 
 export type DeleteMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, '[object Object]'>
+  & Pick<Mutation, 'deletePost'>
 );
 
 export type LoginMutationVariables = Exact<{
@@ -200,7 +200,7 @@ export type LoginMutation = (
     { __typename?: 'UserResponse' }
     & { error?: Maybe<(
       { __typename?: 'Error' }
-      & Pick<Error, '[object Object]' | '[object Object]'>
+      & Pick<Error, 'field' | 'message'>
     )>, user?: Maybe<(
       { __typename?: 'User' }
       & ReguralUserFragment
@@ -213,7 +213,7 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, '[object Object]'>
+  & Pick<Mutation, 'logout'>
 );
 
 export type RegisterMutationVariables = Exact<{
@@ -230,7 +230,7 @@ export type RegisterMutation = (
       & ReguralUserFragment
     )>, error?: Maybe<(
       { __typename?: 'Error' }
-      & Pick<Error, '[object Object]' | '[object Object]'>
+      & Pick<Error, 'field' | 'message'>
     )> }
   ) }
 );
@@ -246,10 +246,10 @@ export type UpdatePostMutation = (
   { __typename?: 'Mutation' }
   & { updatePost?: Maybe<(
     { __typename?: 'Post' }
-    & Pick<Post, '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<Post, 'id' | 'title' | 'text'>
     & { textSnippet: (
       { __typename?: 'PostText' }
-      & Pick<PostText, '[object Object]' | '[object Object]'>
+      & Pick<PostText, 'text' | 'hasMore'>
     ) }
   )> }
 );
@@ -288,10 +288,10 @@ export type PostQuery = (
   { __typename?: 'Query' }
   & { post?: Maybe<(
     { __typename?: 'Post' }
-    & Pick<Post, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<Post, 'id' | 'title' | 'text' | 'points'>
     & { creator: (
       { __typename?: 'User' }
-      & Pick<User, '[object Object]'>
+      & Pick<User, 'username'>
     ) }
   )> }
 );
@@ -306,7 +306,7 @@ export type PostsQuery = (
   { __typename?: 'Query' }
   & { posts: (
     { __typename?: 'PaginatedPosts' }
-    & Pick<PaginatedPosts, '[object Object]'>
+    & Pick<PaginatedPosts, 'hasMore'>
     & { posts: Array<(
       { __typename?: 'Post' }
       & RegularPostFragment
@@ -639,7 +639,7 @@ export const PostDocument = gql`
  *   },
  * });
  */
-export function usePostQuery(baseOptions?: Apollo.QueryHookOptions<PostQuery, PostQueryVariables>) {
+export function usePostQuery(baseOptions: Apollo.QueryHookOptions<PostQuery, PostQueryVariables>) {
         return Apollo.useQuery<PostQuery, PostQueryVariables>(PostDocument, baseOptions);
       }
 export function usePostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostQuery, PostQueryVariables>) {
@@ -676,7 +676,7 @@ export const PostsDocument = gql`
  *   },
  * });
  */
-export function usePostsQuery(baseOptions?: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>) {
+export function usePostsQuery(baseOptions: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>) {
         return Apollo.useQuery<PostsQuery, PostsQueryVariables>(PostsDocument, baseOptions);
       }
 export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostsQuery, PostsQueryVariables>) {
