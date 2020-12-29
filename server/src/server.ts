@@ -37,7 +37,7 @@ console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
   app.use(
     session({
       name: "qid",
-      secret: SESSION_SECRET,
+      secret: "secret", //TODO
       resave: false,
       saveUninitialized: false,
       cookie: {

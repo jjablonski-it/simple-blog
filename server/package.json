@@ -4,8 +4,8 @@
   "main": "server.js",
   "description": "Boilerplate for pern stack applications with graphql and apollo",
   "engines": {
-    "node": "14.15.1",
-    "yarn": "1.22.5"
+    "node": "14.15.x",
+    "yarn": "1.22.x"
   },
   "scripts": {
     "start": "node build/server.js",
