@@ -89,6 +89,7 @@ export default class UserResolver {
   @Mutation(() => Boolean)
   async logout(@Ctx() { req, res }: ContextType) {
     return new Promise((resolve) => {
+      //@ts-ignore
       req.session.destroy((err) => {
         if (err) return resolve(false);
         res.clearCookie("qid");
