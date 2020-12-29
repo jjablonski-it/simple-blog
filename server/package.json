@@ -13,7 +13,7 @@
     "watch": "tsc -w",
     "mon": "nodemon build/server.js",
     "dev": "concurrently \"tsc -w\" \"nodemon build/server.js\"",
-    "heroku-postbuild": "yarn && yarn run build"
+    "heroku-postbuild": "yarn global add typescript@4.0.2 && yarn && yarn run build"
   },
   "license": "MIT",
   "dependencies": {
