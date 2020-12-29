@@ -8,15 +8,28 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Env variables
-const { DATABASE, USERNAME, PASSWORD } = process.env;
+const {
+  DATABASE,
+  DATABASE_URL,
+  HOST,
+  USERNAME,
+  PASSWORD,
+  NODE_ENV,
+} = process.env;
+
+const _prod = NODE_ENV === "production";
+console.log(_prod);
 
 export default {
   type: "postgres",
+  host: HOST,
+  url: DATABASE_URL,
   database: DATABASE,
   username: USERNAME,
   password: PASSWORD,
+  port: 5432,
   entities: [Post, User, Upvote],
-  synchronize: true, // For simplicity
+  synchronize: true,
   logging: true,
+  ssl: _prod ? { rejectUnauthorized: false } : false,
 } as ConnectionOptions;
-// Parameters<typeof createConnection>[0];
