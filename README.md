@@ -22,9 +22,9 @@ Example account
 - *Single Page App*
 - *RWD*
 - *Database*
-- *Session store*
 - *Aniamations*
 - *Data loaders*
+- *Session store*\*
 
 ## Technologies
 
@@ -37,3 +37,6 @@ Example account
 - *Postgres*
 - *Material UI*
 - *Framer motion*
+- *Redis*\*
+
+>\* - Not working with my free hosting - using memory storage for demo instead

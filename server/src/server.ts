@@ -12,15 +12,18 @@ import PostResolver from "./resolvers/PostResolver";
 import UserResolver from "./resolvers/UserResolver";
 import createUserLoader from "./utils/createUserLoader";
 import createVoteStatusLoader from "./utils/createVoteStatusLoader";
+// import redis from "redis";
+// import connectRedis from "connect-redis";
 
 dotenv.config();
-const { PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL } = process.env;
+const { PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL, REDIS_URL } = process.env;
+console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL, REDIS_URL);
 
 const _prod = NODE_ENV === "production";
-console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
 
 (async () => {
-  // const MongoStore = connectMongo(session);
+  // const RedisStore = connectRedis(session);
+  // const redisClient = redis.createClient();
 
   await createConnection(dbConfig).catch((e) => console.log(e));
   const app = express();
@@ -37,7 +40,7 @@ console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
   app.use(
     session({
       name: "qid",
-      secret: "secret", //TODO
+      secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -46,7 +49,7 @@ console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
         sameSite: _prod ? "none" : "lax",
         secure: _prod,
       },
-      // store: new MongoStore({ url: "mongodb://localhost/tut14_store" }),
+      // store: new RedisStore({ client: redisClient, url: REDIS_URL }),
     })
   );
 
