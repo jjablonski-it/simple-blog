@@ -29,7 +29,7 @@ console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
   // Express middleware
   app.use(
     cors({
-      origin: _prod ? CLIENT_URL : "http://localhost:3000",
+      origin: CLIENT_URL,
       credentials: true,
     })
   );
