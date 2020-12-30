@@ -24,7 +24,7 @@ console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
 
   await createConnection(dbConfig).catch((e) => console.log(e));
   const app = express();
-  app.set("proxy", 1);
+  app.set("trust proxy", 1);
 
   // Express middleware
   app.use(
