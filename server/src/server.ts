@@ -45,6 +45,7 @@ console.log(PORT, SESSION_SECRET, NODE_ENV, CLIENT_URL);
         httpOnly: true,
         sameSite: _prod ? "none" : "lax",
         secure: _prod,
+        domain: "posts-with-auth.herokuapp.com",
       },
       // store: new MongoStore({ url: "mongodb://localhost/tut14_store" }),
     })
