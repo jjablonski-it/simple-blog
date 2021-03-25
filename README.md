@@ -4,7 +4,7 @@ Small blog alike app. Created based on Ben Awad's [video](https://www.youtube.co
 
 ## Demo
 
-You can find working heroku app [here](https://posts-with-auth.jjablonski-it.vercel.app/).
+You can find working app [here](https://posts-with-auth.jjablonski-it.vercel.app/).
 
 `I don't check posts in any way, so at the moment everyone can add whatever they want.`
 
